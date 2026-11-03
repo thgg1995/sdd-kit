@@ -1,0 +1,121 @@
+# Catálogo das skills do kit. A preparação do workspace instala uma skill quando:
+# - always: true, ou
+# - algum item de "stacks" bate com a stack de algum repositório, ou
+# - algum item de "techs" bate com as tecnologias detectadas.
+# "trigger" e "loaded_by" viram a linha da tabela de índice no AGENTS.md do workspace.
+# "rules" = seções da constitution que a skill detalha (para revisar a skill quando a regra mudar).
+# Cada skill fica em skills/<nome>/SKILL.md (padrão Agent Skills).
+
+skills:
+  - name: architecture
+    always: true
+    rules: "§1-4"
+    trigger: decisões técnicas do plano: contratos, posse dos dados, versionamento, integração
+    loaded_by: techlead
+
+  - name: sdd
+    always: true
+    rules: "todas (processo SDD)"
+    trigger: etapas de entrada, specify, clarify, plan, tasks, analyze e converge; dúvida sobre o processo
+    loaded_by: pm, techlead
+
+  - name: spec-kit
+    always: true
+    rules: "—"
+    trigger: preparação do workspace; execução de comando /speckit.*; erro do Spec Kit
+    loaded_by: orquestrador, pm
+
+  - name: skill-authoring
+    always: true
+    rules: "—"
+    trigger: propor uma skill nova ou a atualização de uma existente
+    loaded_by: techlead
+
+  - name: unit-testing
+    always: true
+    rules: "§26"
+    trigger: sempre que o dev implementa
+    loaded_by: dev
+
+  - name: code-review
+    always: true
+    rules: "todas (mapa área → regra)"
+    trigger: sempre no papel reviewer
+    loaded_by: reviewer
+
+  - name: qa-integration
+    always: true
+    rules: "§27-28"
+    trigger: sempre no papel qa
+    loaded_by: qa
+
+  - name: observability
+    always: true
+    rules: "§24-25"
+    trigger: tarefa cria ou altera endpoint, consumer ou serviço
+    loaded_by: dev, reviewer
+
+  - name: dotnet-backend
+    stacks: [dotnet]
+    rules: "§29-31"
+    trigger: stack do repositório = dotnet
+    loaded_by: dev, reviewer
+
+  - name: python-backend
+    stacks: [python]
+    rules: "§29-31"
+    trigger: stack do repositório = python
+    loaded_by: dev, reviewer
+
+  - name: api-design
+    techs: [api]
+    rules: "§5-9, §23"
+    trigger: tarefa cria ou altera endpoints ou chama APIs externas
+    loaded_by: dev, reviewer
+
+  - name: kafka-messaging
+    techs: [kafka]
+    rules: "§10-14"
+    trigger: tarefa envolve producers, consumers, tópicos ou outbox
+    loaded_by: dev, reviewer, qa
+
+  - name: data-relational
+    techs: [sql]
+    rules: "§15-17, §19"
+    trigger: tarefa cria ou altera tabelas, migrations ou queries SQL
+    loaded_by: dev, reviewer
+
+  - name: data-nosql
+    techs: [nosql]
+    rules: "§15, §17-19"
+    trigger: tarefa cria ou altera coleções/tabelas NoSQL ou suas consultas
+    loaded_by: dev, reviewer
+
+  - name: aws-infra
+    stacks: [terraform]
+    techs: [aws]
+    rules: "§19-22"
+    trigger: tarefa envolve IaC, IAM, segredos, filas, buckets ou deploy
+    loaded_by: dev, reviewer
+
+  - name: aws-serverless
+    stacks: [terraform]
+    techs: [aws]
+    rules: "§9, §20-22, §24-25, §27"
+    trigger: tarefa cria ou altera função Lambda, fluxo Step Functions, agendamento ou valores compartilhados entre estados Terraform
+    loaded_by: techlead, dev, reviewer
+
+  - name: python-lib
+    stacks: []
+    techs: [python-lib]
+    rules: "§29-31"
+    trigger: repositório python da feature consome ou é a lib compartilhada (kind lib); decisão de reusar, alterar ou criar método na lib
+    loaded_by: techlead, dev, reviewer
+
+  - name: github
+    techs: [github]
+    rules: "—"
+    trigger: tarefa envolve o remoto no GitHub: preparar a base antes de criar a branch, pull, push ou acompanhar as Actions
+    loaded_by: orquestrador, dev
+
+# Adicione aqui as suas skills já existentes, uma entrada por skill.

@@ -1,0 +1,31 @@
+# Estado do workspace, gerado pela preparação (seção 0 do AGENTS.md). Pode ser editado pelo humano.
+# depends_on é preenchido na fase de Plan, a partir dos contratos.
+# stack_source: detectado (marcadores do repositório) | spec (seção "Stack técnico" da spec) | ? (pendente)
+# Campos "?" são preenchidos a partir da spec da feature (etapa `stack` do AGENTS.md).
+
+prepared_at: ?             # data da preparação (AAAA-MM-DD)
+kit_ref: ?                 # KIT_REF e commit do kit, ou "local"
+
+repos:
+  - name: <pasta-do-repo>
+    path: <pasta-do-repo>
+    base_branch: main
+    kind: app                # app | lib (biblioteca compartilhada do kit: consumida pelos outros pelo CATALOGO.md)
+    source: workspace        # workspace | kit (lib: path relativo ao workspace, ex.: ../sdd-kit/python_lib)
+    stack: dotnet            # dotnet | python | node | react | angular | vue | go | java | terraform | ?
+    version: ?               # versão da linguagem/SDK/ferramenta
+    runtime: ?               # aws-lambda | ecs | eks | ec2 | container | browser | n/a | ?
+    frameworks: []
+    techs: [kafka, aws]      # tecnologias que ativam skills condicionais
+    tools: []                # teste, lint, empacotamento, IaC
+    stack_source: detectado
+    depends_on: []
+
+integration:
+  # Como o qa sobe o ambiente e roda os testes de integração/contrato.
+  # Preencha ou deixe o qa propor na primeira execução.
+  up: ?
+  down: ?
+  tests_path: integration/tests
+  run_tests: ?
+  known_limitations: []     # uma linha por limitação do ambiente: problema → contorno (mantida pelo qa)
