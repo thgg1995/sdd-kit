@@ -74,6 +74,7 @@ Faça:
    - numeração `TQ<n>` (as do PM são `Q<n>`);
    - `Depende de: Q<n> = <opção>` quando a pergunta só vale para uma resposta do PM; nenhuma opção sua pode contradizer uma opção dele (compatibilidade);
    - na opção que exige um dado do humano (volume, tamanho, prazo), o campo a preencher na própria opção (`___`).
+   - separe **decisões** (sem default seguro) de **confirmações de default** (default razoável e fácil de desfazer: uma linha cada, no fim da rodada) e abra a rodada com `Decisões: <n> · Confirmações: <m>`.
    Nada a perguntar → grave `## Rodada 1 (<data>) — triagem: nenhuma pergunta`.
 Retorne no máximo 3 linhas: `OK` ou `AGUARDANDO HUMANO: specs/<f>/techlead/perguntas.md`, quantas perguntas e quantos limites prévios.
 

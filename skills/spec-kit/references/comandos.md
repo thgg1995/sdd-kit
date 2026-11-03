@@ -15,7 +15,7 @@ Todos os comandos começam verificando hooks em `.specify/extensions.yml` (`befo
 ## clarify
 - Faz uma varredura de cobertura por categorias — escopo funcional e comportamento; domínio e modelo de dados; fluxo de interação/UX; atributos de qualidade não funcionais; integrações e dependências externas; casos de borda e falhas; restrições e trade-offs; terminologia e consistência; sinais de conclusão; pendências/placeholders — marcando cada uma como Clear/Partial/Missing.
 - Monta uma fila priorizada de no máximo 5 perguntas (impacto × incerteza). Cada pergunta tem opções (tabela) ou resposta curta, com **opção recomendada** em destaque.
-- Original: pergunta uma por vez. **Neste kit: modo lote** — a fila inteira vai num lote único, somada às lacunas do gate (stack agrupada em uma pergunta extra).
+- Original: pergunta uma por vez. **Neste kit: modo lote** — a fila inteira vai num lote único, somada às lacunas do gate (stack agrupada em uma pergunta extra); o teto de 5 do comando não limita o lote, que o papel do PM organiza em decisões e confirmações de default.
 - Gravação: `## Clarifications` (logo após a seção de contexto) › `### Session AAAA-MM-DD` › `- Q: <pergunta> → A: <resposta>`, e atualização da seção afetada (requisito, entidade, caso de borda...).
 - Ao final: resumo de cobertura por categoria (Resolved, Deferred, Clear, Outstanding).
 

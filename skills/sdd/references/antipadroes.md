@@ -16,4 +16,4 @@
 | Escopo que cresce na implementação | refatoração, "melhoria", arquivo fora das tarefas | desfazer; registrar em `Fora do escopo` do relatório |
 | Convergência pulada | entrega declarada pronta sem comparar com spec/plano/tarefas | rodar o converge; o que faltar vira tarefa |
 | Spec gigante e única | uma spec para várias features independentes | uma feature por spec; histórias independentes e priorizadas |
-| Clarificação infinita | rodadas de perguntas de baixo impacto | priorizar por impacto; aplicar defaults declarados; no máximo 5 perguntas de negócio por rodada |
+| Clarificação infinita | rodadas de perguntas de baixo impacto | uma rodada só: decisões abertas por impacto, o resto como confirmação de default; pergunta dependente vai como condicional, não em nova rodada |

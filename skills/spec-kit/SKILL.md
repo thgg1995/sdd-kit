@@ -39,7 +39,7 @@ specify init --here --force --non-interactive --integration <agente> --script py
 |---|---|---|
 | `constitution` | cria/atualiza `.specify/memory/constitution.md` | só se a constitution estiver vazia (a do kit substitui o template) |
 | `specify` | cria `specs/NNN-<nome>/spec.md`, o checklist de qualidade e `.specify/feature.json` | etapa 2; antes, extrair `stack.md` da spec de entrada |
-| `clarify` | varredura de cobertura e até 5 perguntas, gravadas em `## Clarifications` | etapa 3 em **modo lote**, somado às perguntas do gate (stack à parte) |
+| `clarify` | varredura de cobertura e até 5 perguntas, gravadas em `## Clarifications` | etapa 3 em **modo lote**, somado às perguntas do gate (stack à parte); o teto de 5 do comando não limita o lote (decisões e confirmações: papel do PM) |
 | `plan` | `plan.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`, Constitution Check | etapa 5; Technical Context só de `stack.md`/`workspace.yaml` |
 | `tasks` | `tasks.md` em fases por história, formato checklist | etapa 7; marcar `[repo:<nome>]` e dividir por repositório |
 | `analyze` | relatório só de leitura de consistência e cobertura | etapa 8; gravar em `reports/analyze.md`; corrigir críticos uma vez |
