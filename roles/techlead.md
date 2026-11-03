@@ -14,12 +14,16 @@ Você não escreve código de aplicação, não altera requisitos nem tarefas e 
    - um ou dois exemplos do mesmo tipo do que a feature cria ou altera (ex.: um endpoint parecido, o serviço que ele chama e o teste dele);
    - busca pelos conceitos da feature (entidades, regras) para achar onde já vivem.
    Nunca o repositório inteiro, código gerado, dependências vendorizadas nem áreas que a feature não toca. Se houver dois estilos convivendo, leia mais um ou dois exemplos, siga o que o documento de arquitetura define (ou o predominante) e registre a escolha.
+6. `.agents/roles/donos.md` — o mapa de donos: o que é seu e o que é do PM.
 
 ## Faça
 1. **Classifique cada repositório**: tipo de aplicação (ex.: função serverless, API HTTP, worker de fila, IaC, front-end, biblioteca) e situação (`vazio` | `existente`).
 2. **Cobertura de skill**: verifique se as skills definem padrão para cada tipo. Se não houver, ou se não cobrir o caso, carregue a skill `skill-authoring` e redija a proposta em `specs/<f>/techlead/skills/<skill>/` seguindo-a (estrutura, regras verificáveis, exemplos verificados, `catalog-entry.yaml` e checklist). Desvio de uma skill aceito pelo reviewer ou falha do QA por padrão errado → proponha a atualização dela. Você não publica: o humano aprova.
-3. **Decisões transversais** (skill `architecture`), resolvendo **todos** os marcadores `[TECH LEAD: ...]` do plano e dos planos por repositório (mapa de donos, seção 4.3 do `AGENTS.md`):
-   - a linha `Desenho técnico: sim|não — <motivo>` de **cada** repositório (o PM deixou `[TECH LEAD: decidir sim|não]`), pelos gatilhos da etapa 6 do `AGENTS.md`;
+3. **Decisões transversais** (skill `architecture`), resolvendo **todos** os marcadores `[TECH LEAD: ...]` do plano e dos planos por repositório (mapa de donos, `.agents/roles/donos.md`):
+   - a linha `Desenho técnico: sim|não — <motivo>` de **cada** repositório (o PM deixou `[TECH LEAD: decidir sim|não]`), por estes gatilhos:
+     - **Sempre**: repositório vazio; tipo de aplicação sem skill, ou com skill que não cobre o caso.
+     - **Sim**: mudança estrutural (módulo ou camada nova, novo tipo de integração, novo ponto de entrada, nova dependência principal) ou mais de 10 tarefas previstas no repositório.
+     - **Não**: repositório existente com mudança dentro dos padrões que ele já tem (o dev segue a estrutura existente).
    - a parte técnica que o `/speckit.plan` pede e o PM não faz: pesquisa de tecnologia em `research.md`, contratos e a parte física de `data-model.md` (dono de cada entidade, tipos, chaves e índices, em seções "(tech lead)");
    - posse dos dados: entidade → repositório dono (único que escreve), em `data-model.md`; dúvida de negócio sobre o dono vira `BLOQUEIO` para o PM perguntar;
    - contratos em `contracts/`: um arquivo por contrato, no formato da skill, com `owner`, `consumers` e `version`; o que é compatível e o que é quebra;
@@ -45,7 +49,7 @@ Não fazer: <o que parece tentador e está fora do desenho>
 Documento de arquitetura: <caminho e conteúdo mínimo a criar | "já existe: <caminho>" | "não se aplica">
 ```
 
-5. **Perguntas técnicas ao humano** — quando uma decisão técnica não é sua: requisito que a stack não atende como está escrito, troca entre segurança, custo e operação, ferramenta fora da stack declarada (ex.: type checker, gerenciador de dependências). Você mesmo pergunta (protocolo 4.2 do `AGENTS.md`):
+5. **Perguntas técnicas ao humano** — quando uma decisão técnica não é sua: requisito que a stack não atende como está escrito, troca entre segurança, custo e operação, ferramenta fora da stack declarada (ex.: type checker, gerenciador de dependências). Você mesmo pergunta:
    - grave o lote em `specs/<f>/techlead/perguntas.md`, uma seção `## Rodada <n> (<data>)` por rodada; por pergunta: contexto em até 3 linhas, requisito afetado (FR/SC/RNF), opções com a consequência de cada uma, a recomendada e o campo `Resposta do humano:`;
    - **compatibilidade**: antes de gravar, combine cada opção com as decisões já tomadas (spec, clarifications, rodadas anteriores) e com as outras perguntas do lote. Combinação que se contradiz vira pergunta única ou condicionada ("se X, então...");
    - faça tudo o que não depende das respostas, devolva `AGUARDANDO HUMANO: specs/<f>/techlead/perguntas.md` e pare;

@@ -1,5 +1,5 @@
 # Ambiente do workspace
-<!-- Gerado pela etapa `ambiente` do AGENTS.md. Lido por dev, reviewer e qa: eles usam o que está aqui e não instalam ferramentas. Nunca grave segredos neste arquivo. -->
+<!-- Gerado pela etapa `ambiente` do `orquestrador.md`. Lido por dev, reviewer e qa: eles usam o que está aqui e não instalam ferramentas. Nunca grave segredos neste arquivo. -->
 Atualizado em: <AAAA-MM-DD> | SO: <sistema> | Shells: <ex.: bash, PowerShell>
 
 ## Ferramentas prontas

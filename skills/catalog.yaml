@@ -2,7 +2,7 @@
 # - always: true, ou
 # - algum item de "stacks" bate com a stack de algum repositório, ou
 # - algum item de "techs" bate com as tecnologias detectadas.
-# "trigger" e "loaded_by" viram a linha da tabela de índice no AGENTS.md do workspace.
+# "trigger" e "loaded_by" viram a linha da skill no índice do workspace (.agents/indice-skills.md).
 # "rules" = seções da constitution que a skill detalha (para revisar a skill quando a regra mudar).
 # Cada skill fica em skills/<nome>/SKILL.md (padrão Agent Skills).
 

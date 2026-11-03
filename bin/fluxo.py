@@ -14,7 +14,7 @@ Uso, a partir da raiz do workspace:
   python .agents/bin/fluxo.py consumo <f> <papel> [--repo R] [--modo M] [--modelo NOME] [--tokens N] [--ferramentas N] [--ms N]
                                          # consumo que chegou depois do 'fim' (notificação de conclusão do subagente)
   python .agents/bin/fluxo.py evento <f> TXT
-  python .agents/bin/fluxo.py conferir-donos <f>      # confere o mapa de donos (AGENTS.md 4.3); sai com 1 se houver falha
+  python .agents/bin/fluxo.py conferir-donos <f>      # confere o mapa de donos (roles/donos.md); sai com 1 se houver falha
   python .agents/bin/fluxo.py conferir-prontidao <f> <repo>   # confere, por arquivo, se o dev pode começar; sai com 1 se houver falha
 Em --pendencias, inclua o caminho do arquivo a responder (ex.: "gate, rodada 2: specs/<f>/clarifications.md"):
 o painel mostra as perguntas dele.
@@ -218,7 +218,7 @@ def _conferir_verificacoes(pesq, rel):
 
 
 def cmd_conferir_donos(a):
-    """Confere se o que é do tech lead existe e se nenhum marcador dele ficou pendente (mapa de donos, AGENTS.md 4.3)."""
+    """Confere se o que é do tech lead existe e se nenhum marcador dele ficou pendente (mapa de donos, roles/donos.md)."""
     raiz = Path(a.raiz)
     base = raiz / "specs" / a.feature
     if not base.is_dir():

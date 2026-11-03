@@ -1,7 +1,7 @@
-# Estado do workspace, gerado pela preparação (seção 0 do AGENTS.md). Pode ser editado pelo humano.
+# Estado do workspace, gerado pela preparação (preparacao.md do kit). Pode ser editado pelo humano.
 # depends_on é preenchido na fase de Plan, a partir dos contratos.
 # stack_source: detectado (marcadores do repositório) | spec (seção "Stack técnico" da spec) | ? (pendente)
-# Campos "?" são preenchidos a partir da spec da feature (etapa `stack` do AGENTS.md).
+# Campos "?" são preenchidos a partir da spec da feature (etapa `stack` do orquestrador.md).
 
 prepared_at: ?             # data da preparação (AAAA-MM-DD)
 kit_ref: ?                 # KIT_REF e commit do kit, ou "local"

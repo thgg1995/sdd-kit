@@ -55,7 +55,7 @@ Detalhes de entradas, scripts, saídas e gates de cada comando: `references/coma
 2. Comandos recém-instalados podem só aparecer numa nova sessão do agente. Até lá, execute os passos do arquivo do comando (ex.: `.claude/skills/speckit-<cmd>/SKILL.md`), sem mudar o fluxo.
 3. Verifique hooks em `.specify/extensions.yml` antes e depois de cada comando (`hooks.before_<cmd>` / `after_<cmd>`); hook obrigatório é executado, opcional é só informado.
 4. Os scripts imprimem JSON com caminhos absolutos (`--json`); use esses valores em vez de supor diretórios.
-5. Não edite os templates de `.specify/templates/` para mudar o processo: o processo está no `AGENTS.md`; personalização de template vai em preset (`specify preset`).
+5. Não edite os templates de `.specify/templates/` para mudar o processo: o processo está no `orquestrador.md` e nos papéis; personalização de template vai em preset (`specify preset`).
 
 ## Referências
 - `references/instalacao.md` — ler quando o `specify` não existir, estiver desatualizado, fora do PATH, ou a instalação falhar.

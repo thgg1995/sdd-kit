@@ -5,7 +5,7 @@ description: Comunicação com o GitHub por git e GitHub CLI (gh) — acesso e a
 
 # GitHub (git + gh)
 
-Complementa o `AGENTS.md` (commits só em `feature/<f>`). Em conflito, vale o `AGENTS.md`.
+Complementa o processo do kit (`orquestrador.md` e os papéis em `.agents/roles/`; commits só em `feature/<f>`). Em conflito, vale o processo.
 Validado com `gh` 2.103.3 e `git` 2.49.
 
 ## Regras que valem sempre

@@ -45,7 +45,7 @@ Todos os comandos começam verificando hooks em `.specify/extensions.yml` (`befo
 - Neste kit: caminhos resolvidos dentro do repositório da marcação `[repo:<nome>]`; tarefas novas reabrem o dev desses repositórios (limite de ciclos).
 
 ## implement
-- Executa as tarefas do `tasks.md` com um único agente. **Não usado neste kit**: tech lead → dev → reviewer por repositório (seção 5 do `AGENTS.md`).
+- Executa as tarefas do `tasks.md` com um único agente. **Não usado neste kit**: tech lead → dev → reviewer por repositório (seção 5 do `orquestrador.md`).
 
 ## checklist
 - Gera checklists de qualidade dos requisitos para um tema (ex.: segurança, acessibilidade), em `checklists/`: são "testes unitários da escrita dos requisitos" (clareza, completude, consistência), não testes do código. O `checklists/requirements.md` é o checklist próprio do specify/clarify. Opcional neste kit.

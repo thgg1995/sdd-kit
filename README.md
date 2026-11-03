@@ -3,8 +3,10 @@
 Kit versionado do processo Spec-Driven. Mantenha-o num repositório próprio (ex.: `minha-org/sdd-kit`).
 
 ```
-AGENTS.md             # roteiro único do processo (preparação do workspace + pipeline); copie para a raiz de cada workspace
-roles/                # pm, techlead, dev, reviewer, qa
+AGENTS.md             # configuração e roteamento; é o único arquivo que vai para a raiz de cada workspace
+orquestrador.md       # roteiro do orquestrador (pipeline); a preparação o copia para .agents/
+preparacao.md         # preparação do workspace, lida do kit quando o workspace é preparado
+roles/                # pm, techlead, dev, reviewer, qa e donos.md (mapa de donos, lido por pm e techlead)
 bin/                  # fluxo.py (registro do fluxo), janela.py (acompanhamento em janela, abre sempre sozinha) e painel.py (o mesmo no terminal, só se a janela não abrir)
 python_lib/           # biblioteca Python compartilhada (repositório git próprio; consumida do kit, não copiada)
 skills/
@@ -27,7 +29,7 @@ A `python_lib/` vive no kit, com o próprio `.git`. A preparação a registra no
 2. Crie uma pasta de workspace e clone dentro dela os repositórios necessários.
 3. Copie o `AGENTS.md` deste kit para a raiz do workspace e ajuste `KIT_SOURCE` e `IDIOMA`. Se a sua ferramenta de IA não ler `AGENTS.md` sozinha, crie o arquivo de instruções dela com uma linha apontando para ele (ex.: `CLAUDE.md` com `@AGENTS.md`; `GEMINI.md`, ou `contextFileName: AGENTS.md` nas configurações do Gemini CLI).
 4. Escreva a spec seguindo `templates/spec-input.md`. A seção **Stack técnico** é obrigatória para repositórios vazios ou com stack não detectada (stack, versão, runtime, techs). Para os demais, ela é opcional e confirma o que foi detectado.
-5. Abra qualquer agente de IA na raiz do workspace (o processo não depende de fornecedor: sem subagentes, os papéis rodam em sequência; o Spec Kit é instalado para o agente em uso) e peça: "implemente a spec em <arquivo>". A preparação do workspace (seção 0 do `AGENTS.md`) roda sozinha na primeira vez.
+5. Abra qualquer agente de IA na raiz do workspace (o processo não depende de fornecedor: sem subagentes, os papéis rodam em sequência; o Spec Kit é instalado para o agente em uso) e peça: "implemente a spec em <arquivo>". Na primeira vez, o `AGENTS.md` obtém o kit e a preparação do workspace (`preparacao.md`) roda sozinha.
 
 ## Como escrever uma skill
 O padrão completo (estrutura, regras verificáveis, catálogo e checklist) está na skill `skills/skill-authoring/`, que o tech lead segue ao propor skills. Resumo:
