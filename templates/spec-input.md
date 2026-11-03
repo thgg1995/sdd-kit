@@ -18,6 +18,11 @@
 
 ## Requisitos não funcionais
 <!-- Volume, latência, segurança, observabilidade. -->
+<!-- Volumes e limites: a triagem do tech lead os confronta com os limites da plataforma logo depois do specify; o que faltar vira pergunta.
+  - volume de referência e pico (por ciclo, por segundo ou por dia)
+  - tamanho máximo de cada item (mensagem, arquivo, registro)
+  - números: maior valor e precisão exigidos
+  - exceções de segurança aceitas (ex.: permissões que a plataforma só concede com curinga) -->
 
 ## Critérios de aceite
 <!-- Testáveis, um por linha. -->

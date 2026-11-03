@@ -93,7 +93,7 @@ def perguntas(arq):
     itens = []
     for bloco in re.split(r"^### ", trecho, flags=re.M)[1:]:
         cab = bloco.split("\n", 1)[0].strip()
-        if not re.match(r"Q[\w-]*\b", cab):
+        if not re.match(r"T?Q[\w-]*\b", cab):  # Q (PM) e TQ (tech lead)
             continue
         rec = re.search(r"Recomendad[oa]:?\**:?\s*(?:Opção\s+)?([^\s—.,]+)", bloco)
         resp = re.search(r"Resposta do humano:[ \t]*(.*)", bloco)
@@ -159,11 +159,12 @@ def montar(raiz, fdir, largura):
     pend = campos.get("Pendências do humano", "")
     if aguardando:
         linhas += ["", " " + c("alerta", "Decisão pendente: ") + pend]
-        m = re.search(r"(specs/[^\s,;)]+\.md)", pend)
-        arq = raiz / m.group(1) if m else None
-        if arq and arq.exists():
+        for caminho in dict.fromkeys(re.findall(r"(specs/[^\s,;)]+\.md)", pend)):  # gate e triagem podem vir juntos
+            arq = raiz / caminho
+            if not arq.exists():
+                continue
             titulo, itens = perguntas(arq)
-            linhas.append(c("fraco", f" Arquivo: {m.group(1)}" + (f" · {titulo}" if titulo else "")))
+            linhas.append(c("fraco", f" Arquivo: {caminho}" + (f" · {titulo}" if titulo else "")))
             for cab, rec, resp in itens:
                 marca = c("ok", "✔") if resp else " "
                 fim_l = f"resp.: {resp}" if resp else (f"rec.: {rec}" if rec else "")

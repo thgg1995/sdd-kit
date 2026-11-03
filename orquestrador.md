@@ -51,7 +51,7 @@ specs/<feature>/
   contracts/                # contratos de API/eventos/schemas — a ÚNICA superfície compartilhada entre repositórios
   repos/<repo>/{plan.md,tasks.md}   # plan.md inclui a seção "Desenho técnico" do tech lead
   techlead/skills/<skill>/  # propostas de skill do tech lead (aguardam aprovação do humano)
-  techlead/perguntas.md     # perguntas técnicas do tech lead ao humano (protocolo 4.2)
+  techlead/perguntas.md     # perguntas técnicas do tech lead ao humano: triagem e desenho (protocolo 4.2)
   reports/{analyze,converge,techlead}.md
   reports/<repo>/{dev,review}.md
   reports/integration/qa.md
@@ -101,7 +101,11 @@ QA: pendente | dispensado | rodada <n>: APROVADO|REPROVADO
    - Entrada que cobre mais de uma feature independente → modo `decomposição`: o PM propõe o recorte (features, dependências, ordem e MVP); o humano aprova (4.2) antes de qualquer specify. Cada feature aprovada segue o pipeline separadamente, na ordem aprovada.
 1. **Constitution** (orquestrador) — somente se `.specify/memory/constitution.md` não existir ou estiver com o template vazio: `/speckit.constitution`.
 2. **Specify** (PM de autoria, modo `specify`) — a seção **Stack técnico** da spec de entrada vai, sem alterações, para `specs/<f>/stack.md` (sem ela: repositórios em `stack: ?`); depois, `/speckit.specify` e, **no mesmo turno**, a rodada 1 do gate de clarificação (etapa 3).
-3. **Gate de clarificação** (PM de autoria, modo `clarify`; BLOQUEANTE) — o `/speckit.clarify` roda em **modo lote**, somado à verificação do gate feita pelo PM (o que verificar, limites do lote e rodadas: seção "Gate de clarificação" de `.agents/roles/pm.md`). Lote de perguntas → protocolo 4.2; preveem-se no máximo 2 rodadas.
+3. **Gate de clarificação e triagem técnica** (BLOQUEANTE; uma parada só) — o PM de autoria (modo `clarify`) roda o `/speckit.clarify` em **modo lote**, somado à verificação do gate (o que verificar, formato do lote e rodada única: seção "Gate de clarificação" de `.agents/roles/pm.md`).
+   - **Triagem**: quando o PM devolver o lote (`AGUARDANDO HUMANO: specs/<f>/clarifications.md`), dispare, antes de parar, um tech lead novo no modo `triagem` (seção "Triagem" de `.agents/roles/techlead.md`), com as skills de stack que `stack.md` indica (de `.agents/skills/` ou, se a etapa 4 ainda não as instalou, de `KIT/skills/`): ele lê o lote do PM e antecipa as perguntas técnicas e os limites. Gate aprovado sem perguntas → a triagem roda depois do plano, antes do tech lead do desenho (etapa 6).
+   - **Uma parada**: os dois lotes vão ao humano numa mensagem só (protocolo 4.2), primeiro o do PM, e `Pendências do humano` leva os dois caminhos. Sem perguntas nos dois, siga sem parar.
+   - **Respostas**: as `Q` vão para `clarifications.md` e as `TQ` para `techlead/perguntas.md`; continue o PM citando os dois arquivos, no modo `clarify` (ele aplica as suas e as `TQ` que mudam requisito) ou, se a triagem rodou depois do plano, no modo `plan` (revisão) só quando alguma `TQ` mudar requisito. As `TQ` são o ponto de partida do tech lead do desenho.
+   - **2ª rodada**: só quando uma resposta trouxer algo que nenhuma condicional previu, com o motivo registrado por quem pergunta; segue o mesmo caminho, numa parada só. Preveem-se no máximo 2 rodadas.
    **Gate aprovado** → no mesmo turno, o PM segue para o plan (etapa 5), com o Technical Context de `stack.md`; quando ele retornar, o orquestrador faz a etapa 4.
 4. **Stack** (orquestrador; depois do gate aprovado e antes do tech lead) — aplique `stack.md`:
    - `workspace.yaml`: repositório com `stack: ?` → preencha `stack`, `version`, `runtime`, `frameworks`, `techs`, `tools` e `stack_source: spec`. Stack detectada → preencha só campos `?`/vazios e acrescente `techs`/`tools` novos; nunca troque um valor detectado, exceto pelo que o humano decidiu no gate.
@@ -111,8 +115,9 @@ QA: pendente | dispensado | rodada <n>: APROVADO|REPROVADO
    - QA de integração: **desativado por padrão**. Leia `qa_integracao` de `stack.md`: só `sim`, escrito explicitamente na spec de entrada (seção `Execução`) ou no pedido do humano, ativa → `fluxo.py status <f> --qa pendente`; `não` ou campo ausente → `--qa dispensado`. Ninguém pergunta ao humano por isso; se ele pedir o QA depois, ative-o (`--qa pendente`) e prepare o ambiente de integração (etapa 10) antes da etapa 12.
 5. **Plan** (PM de autoria, modo `plan`; em geral no mesmo turno do gate aprovado) — o PM executa o `/speckit.plan` e preenche a parte de produto: Technical Context só de `stack.md`/`workspace.yaml` (o plano não escolhe outra stack); cada requisito mapeado para um repositório do `workspace.yaml` (repositório novo é sinalizado e criado só com aprovação do humano); Constitution Check; `repos/<repo>/plan.md` com o que cada repositório entrega. O PM **ignora as fases técnicas do `/speckit.plan`** (pesquisa de tecnologia, contratos, modelo físico de dados): o Technical Context é cópia de `stack.md`/`workspace.yaml`, e tudo que o mapa 4.3 atribui ao tech lead fica como marcador `[TECH LEAD: <o que decidir>]`, inclusive `Desenho técnico: [TECH LEAD: decidir sim|não]` em cada repositório.
 6. **Tech lead** (um agente novo por rodada, para a feature inteira) — roda **sempre**, exceto em trabalho pequeno (regra 8: um repositório existente, sem lib e com até 10 tarefas previstas), quando o orquestrador registra `Desenho técnico: não — trabalho pequeno` no plano do repositório e pula a etapa. Preenche tudo que o mapa 4.3 lhe atribui: os marcadores `[TECH LEAD: ...]` (contratos em `contracts/` **antes de qualquer código**, posse dos dados, versionamento, integração, decisões técnicas, `depends_on`), a parte física de `data-model.md`, as decisões técnicas e os limites em `research.md`, e a linha `Desenho técnico: sim|não — <motivo>` de **cada** repositório, com o desenho dos marcados `sim`. Os gatilhos do desenho por repositório (sempre, sim, não) estão em `.agents/roles/techlead.md`.
+   - **Ponto de partida**: as respostas `TQ` da triagem (`techlead/perguntas.md`) e os `Limites prévios` do `research.md`. Pergunta técnica nova no desenho é exceção, com o motivo no relatório (`Perguntas fora da triagem`).
    - **Lib compartilhada** (skill `python-lib`): para cada necessidade técnica reutilizável dos consumidores (clientes AWS, SQS, S3, DynamoDB, segredos, STS, logs...), o tech lead decide pelo `CATALOGO.md` da lib — reusar, alterar (compatível), criar ou local — e registra na linha `Lib:` do `Desenho técnico` do consumidor. Alterar ou criar → a lib entra na feature como repositório (plano, desenho e tarefas próprias) e cada consumidor ganha `depends_on` nela, para que a lib vá numa onda anterior. Mudança incompatível na lib → protocolo 4.2.
-   - **Limites da plataforma**: para cada fluxo de dados entre componentes, confronte o contrato com os limites dos serviços no pior caso (tamanho de mensagem e de dado entre estados, precisão numérica, tempo, taxa, tentativas), usando a `references/limites.md` da skill da stack quando houver. Registre em `research.md`, seção `Limites verificados` (limite, fonte, pior caso, resultado). Contrato que estoura o limite é corrigido **antes** de ser congelado (protocolo 4.2 se mudar requisito).
+   - **Limites da plataforma**: para cada fluxo de dados entre componentes, confronte o contrato com os limites dos serviços no pior caso (tamanho de mensagem e de dado entre estados, precisão numérica, tempo, taxa, tentativas), usando a `references/limites.md` da skill da stack quando houver. Registre em `research.md`, seção `Limites verificados` (limite, fonte, pior caso, resultado). Contrato que estoura o limite é corrigido **antes** de ser congelado (protocolo 4.2 se mudar requisito).
    - **Verificações com motor real**: para todo artefato avaliado por um motor externo (ASL e JSONata, políticas IAM, SQL, templates...) cujo teste de unidade só decodifica ou checa sintaxe, registre em `research.md`, seção `Verificações`, o motor que o avalia de verdade (nome, versão, como rodar sem credenciais) ou a lacuna explícita. As verificações viram tarefas dos repositórios e o `ambiente` (etapa 10) instala os motores.
    - **Skill proposta** → protocolo 4.2. Aprovada → copie-a para o kit (`KIT_LOCAL`, ou PR no `KIT_SOURCE`) e instale-a em `.agents/skills/` (procedimento **Skills** da seção 0); recusada → siga sem ela e registre a lacuna em `status.md`.
    - **Pergunta técnica ao humano** (requisito que a stack não atende como escrito, troca entre segurança, custo e operação, ferramenta fora da stack declarada) → o próprio tech lead grava o lote em `specs/<f>/techlead/perguntas.md` (protocolo 4.2). Resposta que muda a spec ou o plano de produto → o PM de autoria aplica a parte de produto (modo `plan`) antes de o tech lead continuar.
@@ -163,7 +168,9 @@ PM e tech lead não conversam com o humano: quando precisam de uma decisão, gra
 
 1. O orquestrador atualiza `status.md` (`AGUARDANDO HUMANO`, com o caminho do arquivo em `Pendências do humano`), mostra ao humano o lote do arquivo **sem reescrever nem resumir as perguntas** e PARA.
    O humano responde no chat ou preenche `Resposta do humano:` no próprio arquivo e diz "continue"; nesse caso, não transcreva: o arquivo já tem as respostas.
+   **Gate e triagem juntos** (etapa 3): os dois arquivos na mesma mensagem, primeiro o do PM, cada lote sob o caminho do seu arquivo.
 2. Na resposta, grava-a como veio no mesmo arquivo (campo `Resposta do humano`) e continua o papel no mesmo modo para aplicá-la (5.1). O orquestrador nunca aplica nem interpreta as respostas.
+   Com dois arquivos, cada resposta vai para o do dono pelo prefixo: `Q` → `clarifications.md`, `TQ` → `techlead/perguntas.md`; o prompt de continuação cita os dois.
 3. Quem pergunta confere a **compatibilidade**: cada opção, combinada com as decisões já tomadas e com as outras respostas possíveis do lote, tem de ser viável; combinações que se contradizem viram uma pergunta única ou condicionada ("se X, então...").
 
 ### 4.3 Donos dos artefatos
@@ -178,7 +185,7 @@ Pendência do tech lead num artefato do PM: marcador `[TECH LEAD: <o que decidir
 | Papel | Instruções | Skills | Modelo | Escreve |
 |---|---|---|---|---|
 | **pm** | `.agents/roles/pm.md` (modos: entrevista, decomposição, specify, clarify, plan, tasks, correcao, analyze, converge) | `sdd` + `spec-kit` | forte | artefatos de `specs/_input/` e `specs/<f>/` do modo (spec, clarifications, stack, plano de produto, tarefas, `reports/analyze.md`, `reports/converge.md`); somente leitura no código |
-| **techlead** | `.agents/roles/techlead.md` | `architecture` + `sdd` + a skill da stack de cada repositório + condicionais; `skill-authoring` quando propõe skill | forte | `contracts/`, seções `[TECH LEAD]` do plano, `Desenho técnico` de cada repositório, `depends_on`, propostas de skill, `reports/techlead.md`; somente leitura no código |
+| **techlead** | `.agents/roles/techlead.md` (modos: triagem, desenho) | `architecture` + `sdd` + a skill da stack de cada repositório + condicionais; `skill-authoring` quando propõe skill | forte | `contracts/`, seções `[TECH LEAD]` do plano, `Desenho técnico` de cada repositório, `depends_on`, propostas de skill, `reports/techlead.md`; somente leitura no código |
 
 **Continuidade dos agentes**
 - **PM de autoria**: o mesmo agente da entrada (quando houver) ao tasks. Se a ferramenta permite continuar um subagente com o contexto preservado, o orquestrador o continua a cada etapa com o prompt de continuação (5.4) e registra o identificador em `Agentes em curso`; senão, ou se ele não puder mais ser continuado, dispara um PM novo no mesmo modo, que se situa pelo disco.
@@ -186,6 +193,7 @@ Pendência do tech lead num artefato do PM: marcador `[TECH LEAD: <o que decidir
 - **correcao completa** (falha que muda contrato, requisito, `depends_on` ou lib, ou sem causa clara no `qa.md`): tech lead novo (relatório com `Para o PM` e a seção "Correções após o QA" do plano) → PM novo, modo `correcao`, que lê só o relatório do tech lead, as falhas do `qa.md` e a seção de correção do plano de cada repositório afetado, e acrescenta a fase de correção ao `tasks.md`. Não herda o contexto do PM de autoria.
 - **analyze** e **converge**: sempre um PM novo, por independência; as chamadas seguintes do converge continuam esse PM.
 - **tech lead**: um agente **novo a cada rodada** (primeira passagem, depois das respostas do humano, depois da revisão do PM, depois de falha do QA). Ele se situa por `reports/techlead.md` (campo `Retomada`), por `research.md` e pelos arquivos que o prompt diz que mudaram; o orquestrador não o continua com o contexto da rodada anterior.
+- **tech lead de triagem**: agente próprio e curto na etapa 3; não é continuado: o do desenho é outro agente, que lê as respostas no disco.
 - O disco continua sendo a fonte da verdade: todo agente grava o resultado de cada turno nos artefatos antes de retornar.
 
 ### 5.2 Ordem de execução (ondas)
@@ -213,7 +221,7 @@ dev ──► reviewer
 ### 5.4 Template do prompt de delegação (mantenha curto assim)
 ```
 Papel: <pm|techlead|dev|reviewer|qa>. Repo: <nome> em <path do workspace.yaml> (pm, techlead e qa: "todos da feature"). Stack: <stack>. Feature: <f>. Idioma: <IDIOMA>.
-Modo: <só pm: entrevista|decomposição|specify|clarify|plan|tasks|correcao|analyze|converge>
+Modo: <pm: entrevista|decomposição|specify|clarify|plan|tasks|correcao|analyze|converge; techlead: triagem|desenho>
 Leia: .agents/roles/<papel>.md (ele diz o que mais ler).
 Carregue as skills (e somente elas): <obrigatórias> + <condicionais>
 Retorne: resumo de no máximo 15 linhas (pm, techlead e qa: 3 linhas).

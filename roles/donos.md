@@ -12,10 +12,11 @@ Cada artefato ou seção tem um único dono: o PM não escreve no que é do tech
 | `repos/<repo>/plan.md`: "O que este repositório entrega", "Fora do escopo" | PM |
 | `repos/<repo>/plan.md`: linha `Desenho técnico: sim\|não`, seção `Desenho técnico`, `Contratos`, "Correções após o QA" | tech lead |
 | `research.md`: decisões de produto (D-xx) | PM |
-| `research.md`: decisões técnicas (T-xx) e `Limites verificados` | tech lead |
+| `research.md`: decisões técnicas (T-xx), `Limites prévios` (triagem) e `Limites verificados` | tech lead |
 | `data-model.md`: entidades, atributos e regras de negócio | PM |
 | `data-model.md`: dono de cada entidade, tipos físicos, chaves, índices (seções "(tech lead)") | tech lead |
 | `contracts/*` | tech lead |
+| `techlead/perguntas.md` (triagem e desenho) | tech lead |
 | `workspace.yaml`: `depends_on` | tech lead |
 | `workspace.yaml`: stack, versão, runtime, techs e tools | orquestrador (a partir de `stack.md`) |
 
