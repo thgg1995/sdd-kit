@@ -25,6 +25,12 @@ templates/
 A `python_lib/` vive no kit, com o próprio `.git`. A preparação a registra no `workspace.yaml` (`kind: lib`, `source: kit`, `path: ../sdd-kit/python_lib`) e os repositórios Python a consomem de lá. O tech lead decide, pelo `CATALOGO.md` dela, se cada necessidade técnica dos consumidores reusa, altera ou cria um método na lib (skill `python-lib`); as alterações são commitadas na própria lib, no kit.
 
 ## Como usar
+A janela de acompanhamento exibe um escritório em pixel art, com luminárias, plataformas, janela, plantas e um DEV descansando no sofá até o fluxo terminar. O painel à direita mostra progresso, etapa, situação, agente responsável e tempos calculados pelos eventos registrados. A área inferior mantém sempre visíveis a lista de etapas, os detalhes e os logs, com rolagem e opção de acompanhar automaticamente os eventos novos. As etapas concluídas ficam verdes; a atual fica amarela, com o orquestrador aguardando abaixo da mesa. A barra usa os passos anteriores à etapa atual sobre o total e exclui QA dispensado. Sem dados de tempo ou agente, o painel mostra “—”. Os nomes originais das etapas são preservados. Tudo usa tkinter, sem dependências externas.
+
+Para experimentar o visual, execute `python bin/demo_janela.py`. A demonstração percorre automaticamente os 14 passos com dados simulados. Feche a janela pelo “X” para encerrar. Os componentes visuais ficam em `bin/interface.py`, copiado junto aos demais scripts na preparação.
+
+Validação do painel: `python -B -m unittest discover -s tests`. Os testes de interface precisam de tkinter e de uma sessão gráfica.
+
 1. Coloque suas skills em `skills/<nome>/SKILL.md` e registre cada uma no `catalog.yaml`.
 2. Crie uma pasta de workspace e clone dentro dela os repositórios necessários.
 3. Copie o `AGENTS.md` deste kit para a raiz do workspace e ajuste `KIT_SOURCE` e `IDIOMA`. Se a sua ferramenta de IA não ler `AGENTS.md` sozinha, crie o arquivo de instruções dela com uma linha apontando para ele (ex.: `CLAUDE.md` com `@AGENTS.md`; `GEMINI.md`, ou `contextFileName: AGENTS.md` nas configurações do Gemini CLI).
