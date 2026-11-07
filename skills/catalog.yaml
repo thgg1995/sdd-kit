@@ -10,7 +10,7 @@ skills:
   - name: architecture
     always: true
     rules: "§1-4"
-    trigger: decisões técnicas do plano: contratos, posse dos dados, versionamento, integração
+    trigger: "decisões técnicas do plano: contratos, posse dos dados, versionamento, integração"
     loaded_by: techlead
 
   - name: sdd
@@ -67,6 +67,18 @@ skills:
     trigger: stack do repositório = python
     loaded_by: dev, reviewer
 
+  - name: clean-architecture
+    stacks: [dotnet, python, node, go, java]
+    rules: "§32"
+    trigger: repositório de back-end (stack dotnet, python, node, go ou java; exceto kind lib) — Desenho técnico, e tarefa que cria ou altera módulo, caso de uso, ponto de entrada ou adaptador
+    loaded_by: techlead, dev, reviewer
+
+  - name: clean-code
+    stacks: [dotnet, python, node, go, java, react, angular, vue]
+    rules: "§29"
+    trigger: dev implementa ou reviewer revisa código de aplicação, de back-end ou de front-end (nunca IaC)
+    loaded_by: dev, reviewer
+
   - name: api-design
     techs: [api]
     rules: "§5-9, §23"
@@ -115,7 +127,7 @@ skills:
   - name: github
     techs: [github]
     rules: "—"
-    trigger: tarefa envolve o remoto no GitHub: preparar a base antes de criar a branch, pull, push ou acompanhar as Actions
+    trigger: "tarefa envolve o remoto no GitHub: preparar a base antes de criar a branch, pull, push ou acompanhar as Actions"
     loaded_by: orquestrador, dev
 
 # Adicione aqui as suas skills já existentes, uma entrada por skill.

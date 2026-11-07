@@ -14,7 +14,7 @@ Complementa `aws-infra` (IaC, IAM, segredos, criptografia) e `python-backend` (c
 - Tags por `default_tags` do provider.
 
 ## Função Lambda (Python)
-- Handler fino (`handler.py`): lê configuração, cria clientes, chama a regra, registra o resultado. Regra pura em módulo próprio, com portas `typing.Protocol`; adaptadores boto3 em `aws.py`.
+- Estrutura pelo nível da `clean-architecture` (em geral, 1), com os nomes da `python-backend`: `handler.py` lê a configuração, cria os clientes, chama a regra e registra o resultado; adaptadores boto3 em `aws.py`.
 - Configuração só por variáveis de ambiente definidas no Terraform; validada no início da invocação; ausente → erro sem efeito colateral.
 - Clientes boto3 com `botocore.config.Config(connect_timeout, read_timeout, retries)` explícitos (§9). Retentativa do SDK só quando a operação é idempotente e o requisito permite.
 - Sem async: para paralelismo de chamadas AWS, `ThreadPoolExecutor` com um cliente compartilhado e `max_pool_connections` ≥ workers.
@@ -59,3 +59,7 @@ Complementa `aws-infra` (IaC, IAM, segredos, criptografia) e `python-backend` (c
 - Terraform: `terraform test` com `mock_provider "aws"` em modo `plan`; `override_data` para entradas de contrato; `run` nomeado com o ID do requisito.
 - Python: `pytest` com `botocore.stub.Stubber` ou fakes das portas; sem rede.
 - Fluxo: `aws stepfunctions validate-state-machine-definition` e `aws stepfunctions test-state` por estado; ponta a ponta no QA contra AWS real. Step Functions Local não é usado (sem JSONata).
+
+## Referências
+- `references/step-functions.md` — ler quando a tarefa cria ou altera um fluxo Step Functions.
+- `references/limites.md` — ler quando o tech lead, na triagem ou no desenho, confere contratos ou fluxos entre serviços AWS antes de congelá-los.

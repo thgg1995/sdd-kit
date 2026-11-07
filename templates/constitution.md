@@ -50,10 +50,11 @@ Aqui ficam **somente regras**. O "como" fica nas skills, que referenciam cada re
 ## VIII. Código
 30. Código NUNCA bloqueia em operações assíncronas.
 31. Código novo DEVE ser tipado de forma verificável por compilador ou type checker.
+32. No back-end, regra de negócio NUNCA depende de framework, SDK, driver ou formato de transporte; entrada e saída ficam em adaptadores.
 
 ## Governança
 - Esta constitution prevalece sobre skills, convenções de repositório e preferências pontuais.
 - Alterações exigem aprovação do humano e incremento de versão (MAJOR: regra removida/redefinida; MINOR: regra nova; PATCH: redação). Ao alterar uma regra, revise as skills que a referenciam.
 - Exceções são registradas no `plan.md` da feature, com motivo e alternativa descartada, e não valem para outras features.
 
-**Versão**: 2.0.0 | **Ratificada em**: <data> | **Última alteração**: <data>
+**Versão**: 2.1.0 | **Ratificada em**: <data> | **Última alteração**: <data>

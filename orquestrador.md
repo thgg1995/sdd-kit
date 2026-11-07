@@ -186,7 +186,7 @@ Pendência do tech lead num artefato do PM: marcador `[TECH LEAD: <o que decidir
 | Papel | Instruções | Skills | Modelo | Escreve |
 |---|---|---|---|---|
 | **pm** | `.agents/roles/pm.md` (modos: entrevista, decomposição, specify, clarify, plan, tasks, correcao, analyze, converge) | `sdd` + `spec-kit` | forte | artefatos de `specs/_input/` e `specs/<f>/` do modo (spec, clarifications, stack, plano de produto, tarefas, `reports/analyze.md`, `reports/converge.md`); somente leitura no código |
-| **techlead** | `.agents/roles/techlead.md` (modos: triagem, desenho) | `architecture` + `sdd` + a skill da stack de cada repositório + condicionais; `skill-authoring` quando propõe skill | forte | `contracts/`, seções `[TECH LEAD]` do plano, `Desenho técnico` de cada repositório, `depends_on`, propostas de skill, `reports/techlead.md`; somente leitura no código |
+| **techlead** | `.agents/roles/techlead.md` (modos: triagem, desenho) | `architecture` + `sdd` + `clean-architecture` (se a feature tem repositório de back-end) + a skill da stack de cada repositório + condicionais; `skill-authoring` quando propõe skill | forte | `contracts/`, seções `[TECH LEAD]` do plano, `Desenho técnico` de cada repositório, `depends_on`, propostas de skill, `reports/techlead.md`; somente leitura no código |
 
 **Continuidade dos agentes**
 - **PM de autoria**: o mesmo agente da entrada (quando houver) ao tasks. Se a ferramenta permite continuar um subagente com o contexto preservado, o orquestrador o continua a cada etapa com o prompt de continuação (5.4) e registra o identificador em `Agentes em curso`; senão, ou se ele não puder mais ser continuado, dispara um PM novo no mesmo modo, que se situa pelo disco.
@@ -212,10 +212,11 @@ dev ──► reviewer
 ```
 | Papel | Instruções | Skills obrigatórias | Skills condicionais | Modelo | Escreve |
 |---|---|---|---|---|---|
-| **dev** | `.agents/roles/dev.md` | skill da stack do repo + `unit-testing` | por gatilho da tarefa (ex.: mensageria, infra) | forte | código + testes unitários; `reports/<repo>/dev.md` |
-| **reviewer** | `.agents/roles/reviewer.md` | `code-review` + skill da stack do repo | as mesmas condicionais que o dev carregou | forte | somente `reports/<repo>/review.md` (somente leitura no código) |
+| **dev** | `.agents/roles/dev.md` | skill da stack do repo + `unit-testing` + `clean-code` e `clean-architecture` (regra abaixo) | por gatilho da tarefa (ex.: mensageria, infra) | forte | código + testes unitários; `reports/<repo>/dev.md` |
+| **reviewer** | `.agents/roles/reviewer.md` | `code-review` + skill da stack do repo + `clean-code` e `clean-architecture` (regra abaixo) | as mesmas condicionais que o dev carregou | forte | somente `reports/<repo>/review.md` (somente leitura no código) |
 
 - O orquestrador decide as skills condicionais lendo `repos/<repo>/tasks.md` e o índice da seção 3, e as informa explicitamente no prompt. O subagente não procura skills por conta própria.
+- `clean-code`: todo repositório de aplicação, de back-end ou de front-end; nunca IaC (`terraform`). `clean-architecture`: só repositório de back-end (stack `dotnet`, `python`, `node`, `go` ou `java`), exceto biblioteca (`kind: lib`); repositório de front-end (`react`, `angular`, `vue`) nunca a recebe.
 - Só achados `bloqueante` do reviewer voltam para o dev; `sugestão` fica registrada no relatório.
 - **Ciclo de correção enxuto**: o prompt do dev lista as tarefas da fase de correção; ele lê só elas, a seção de correção do `plan.md` e os arquivos que o relatório anterior cita, não o plano inteiro. O reviewer julga só o diff incremental.
 

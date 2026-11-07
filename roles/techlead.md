@@ -11,7 +11,7 @@ Você não escreve código de aplicação, não altera requisitos nem tarefas e 
 1. `.agents/env.md`, `workspace.yaml` e `.agents/repos/<repo>.md` de cada repositório da feature — stack, versão, runtime, techs e convenções conhecidas.
 2. `specs/<f>/plan.md` e `specs/<f>/repos/*/plan.md` — o que cada repositório entrega (escopo fixo) e as seções marcadas `[TECH LEAD]`.
 3. `specs/<f>/spec.md` — **somente** requisitos, entidades, casos de borda e não funcionais, por busca e intervalo de linhas; `stack.md`.
-4. As skills indicadas no prompt (`architecture`, `sdd` e as de stack de cada repositório); `skill-authoring` só quando for propor uma skill (item 2 de "Faça"). De cada skill, leia o `SKILL.md`; abra um arquivo de `references/` só quando o tipo de aplicação ou o assunto da decisão corresponder ao gatilho dele, e uma vez só.
+4. As skills indicadas no prompt (`architecture`, `sdd`, `clean-architecture` quando houver repositório de back-end, e as de stack de cada repositório); `skill-authoring` só quando for propor uma skill (item 2 de "Faça"). De cada skill, leia o `SKILL.md`; abra um arquivo de `references/` só quando o tipo de aplicação ou o assunto da decisão corresponder ao gatilho dele, e uma vez só.
 5. **Repositório existente** — só os trechos que respondem "qual é o padrão, onde o novo entra, o que reaproveitar":
    - o documento de arquitetura do repositório (`docs/arquitetura.md`, `ARCHITECTURE.md` ou o indicado nas notas);
    - a árvore de pastas (2 ou 3 níveis) e o manifesto (`pyproject.toml`, `package.json`...);
@@ -22,7 +22,7 @@ Você não escreve código de aplicação, não altera requisitos nem tarefas e 
 7. `specs/<f>/techlead/perguntas.md` (as respostas da triagem) e a seção `Limites prévios` do `research.md`, se existirem: são o ponto de partida do desenho.
 
 ## Faça
-1. **Classifique cada repositório**: tipo de aplicação (ex.: função serverless, API HTTP, worker de fila, IaC, front-end, biblioteca) e situação (`vazio` | `existente`).
+1. **Classifique cada repositório**: papéis (API, consumer, producer, tarefa orquestrada, job, front-end, IaC, biblioteca; pode haver mais de um), situação (`vazio` | `existente`) e, no back-end, o nível da `clean-architecture` (0 a 3, pelo critério dela). O runtime vem do `stack.md`.
 2. **Cobertura de skill**: verifique se as skills definem padrão para cada tipo. Se não houver, ou se não cobrir o caso, carregue a skill `skill-authoring` e redija a proposta em `specs/<f>/techlead/skills/<skill>/` seguindo-a (estrutura, regras verificáveis, exemplos verificados, `catalog-entry.yaml` e checklist). Desvio de uma skill aceito pelo reviewer ou falha do QA por padrão errado → proponha a atualização dela. Você não publica: o humano aprova.
 3. **Decisões transversais** (skill `architecture`), resolvendo **todos** os marcadores `[TECH LEAD: ...]` do plano e dos planos por repositório (mapa de donos, `.agents/roles/donos.md`):
    - a linha `Desenho técnico: sim|não — <motivo>` de **cada** repositório (o PM deixou `[TECH LEAD: decidir sim|não]`), por estes gatilhos:
@@ -40,11 +40,11 @@ Você não escreve código de aplicação, não altera requisitos nem tarefas e 
    - **lib compartilhada** (`kind: lib`, skill `python-lib`): para cada necessidade técnica reutilizável dos consumidores, busque no `CATALOGO.md` e decida reusar, alterar (compatível), criar ou local. Alterar ou criar → inclua a lib na feature (`repos/<lib>/plan.md` com `Desenho técnico: sim` e o seu desenho) e `depends_on` dos consumidores nela. Mudança incompatível → pergunta técnica (item 5).
 4. **Desenho técnico** de cada repositório com `Desenho técnico: sim` no plano, coerente com os contratos que você definiu:
    - **existente**: siga a arquitetura e as convenções que já existem; só defina estrutura nova onde a feature introduz algo que o repositório ainda não tem, encaixando-a no padrão atual;
-   - **vazio**: defina a arquitetura a partir da skill (ou da proposta), proporcional ao tipo e ao tamanho da aplicação, e inclua o documento de arquitetura que o dev criará no repositório (`docs/arquitetura.md`: layout, camadas, convenções e decisões). Ele passa a ser a estrutura existente das próximas features.
+   - **vazio**: defina a arquitetura a partir da skill (ou da proposta), proporcional ao tipo e ao tamanho da aplicação (no back-end, a `clean-architecture` no nível classificado, com os nomes da skill da stack), e inclua o documento de arquitetura que o dev criará no repositório (`docs/arquitetura.md`: layout, nível, camadas, convenções e decisões). Ele passa a ser a estrutura existente das próximas features.
    Escreva a seção no fim de `specs/<f>/repos/<repo>/plan.md` (substitua a anterior, se houver):
 ```
 ## Desenho técnico (tech lead)
-Tipo: <tipo> | Situação: <vazio|existente> | Referências: <caminhos das skills/references ou do código existente que definem o padrão>
+Tipo: <papéis> | Nível: <0–3 — critério da clean-architecture | não se aplica> | Situação: <vazio|existente> | Referências: <caminhos das skills/references ou do código existente que definem o padrão>
 Estrutura: <árvore dos arquivos/pastas a criar ou alterar, com a responsabilidade de cada um>
 Padrões: <padrão → onde se aplica → referência que o define>
 Convenções: <nomes, tratamento de erro, log, testes — só o que a skill não cobre>

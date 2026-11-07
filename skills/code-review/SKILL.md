@@ -21,6 +21,8 @@ description: Como revisar um diff contra a constitution e as skills do time e re
 | Logs, tracing, health | §24–25 | `observability` |
 | Testes | §26–28 | `unit-testing` |
 | Qualquer código | §29–31 | skill da stack |
+| Camadas, imports e adaptadores (back-end) | §32 | `clean-architecture` |
+| Nomes, funções, erros, comentários; limites do linter | §29 | `clean-code` |
 | Fronteiras entre serviços | §1–4 | contratos em `contracts/` |
 
 ## Achados
