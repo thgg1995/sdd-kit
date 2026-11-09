@@ -42,7 +42,7 @@ Um bloco por repositório envolvido na feature. `name` = nome da pasta, igual ao
   detectado vira pergunta no gate de clarificação (o código existente não é trocado sem aprovação).
 - Use o vocabulário abaixo, pois é ele que ativa as skills (catalog.yaml do kit).
   stack:   dotnet | python | node | react | angular | vue | go | java | terraform
-  techs:   kafka | aws | api | sql | nosql | docker
+  techs:   kafka | aws | api | sql | nosql | docker | terraform
 - Campos desconhecidos: use "?". O gate de clarificação pergunta somente os obrigatórios.
 -->
 ```yaml

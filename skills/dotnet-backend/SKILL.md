@@ -8,12 +8,12 @@ description: Padrões de código .NET do time (async, tipagem, configuração, e
 ## Versão e build (constitution §29)
 - .NET LTS mais recente adotada pelo time. <!-- TIME: fixar versão -->
 - `Directory.Build.props` com `<Nullable>enable</Nullable>`, `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` e analisadores habilitados.
-- Limite de complexidade da `clean-code` pela regra CA1502 (o padrão dela é mais folgado):
+- Limite de complexidade da `clean-code-solid` pela regra CA1502 (o padrão dela é mais folgado):
   - `.editorconfig`, na seção `[*.cs]`: `dotnet_diagnostic.CA1502.severity = warning`;
   - `CodeMetricsConfig.txt` ao lado do `Directory.Build.props`, com a linha `CA1502: 10`;
   - no `Directory.Build.props`: `<ItemGroup><AdditionalFiles Include="$(MSBuildThisFileDirectory)CodeMetricsConfig.txt" /></ItemGroup>`.
 - Supressão com motivo: `[SuppressMessage("Maintainability", "CA1502", Justification = "<motivo>")]`.
-- Limite de parâmetros da `clean-code`: os analisadores padrão não o medem; o reviewer confere no diff.
+- Limite de parâmetros da `clean-code-solid`: os analisadores padrão não o medem; o reviewer confere no diff.
 
 ## Async (constitution §30)
 - Async de ponta a ponta. Proibido `.Result`, `.Wait()`, `.GetAwaiter().GetResult()` e `async void` (exceto handlers de evento de UI).

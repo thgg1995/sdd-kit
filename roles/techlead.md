@@ -11,7 +11,7 @@ Você não escreve código de aplicação, não altera requisitos nem tarefas e 
 1. `.agents/env.md`, `workspace.yaml` e `.agents/repos/<repo>.md` de cada repositório da feature — stack, versão, runtime, techs e convenções conhecidas.
 2. `specs/<f>/plan.md` e `specs/<f>/repos/*/plan.md` — o que cada repositório entrega (escopo fixo) e as seções marcadas `[TECH LEAD]`.
 3. `specs/<f>/spec.md` — **somente** requisitos, entidades, casos de borda e não funcionais, por busca e intervalo de linhas; `stack.md`.
-4. As skills indicadas no prompt (`architecture`, `sdd`, `clean-architecture` quando houver repositório de back-end, e as de stack de cada repositório); `skill-authoring` só quando for propor uma skill (item 2 de "Faça"). De cada skill, leia o `SKILL.md`; abra um arquivo de `references/` só quando o tipo de aplicação ou o assunto da decisão corresponder ao gatilho dele, e uma vez só.
+4. As skills indicadas no prompt (`architecture`, `sdd`, `clean-architecture` e `design-patterns` quando houver repositório de back-end, e as de stack de cada repositório); `skill-authoring` só quando for propor uma skill (item 2 de "Faça"). De cada skill, leia o `SKILL.md`; abra um arquivo de `references/` só quando o tipo de aplicação ou o assunto da decisão corresponder ao gatilho dele, e uma vez só.
 5. **Repositório existente** — só os trechos que respondem "qual é o padrão, onde o novo entra, o que reaproveitar":
    - o documento de arquitetura do repositório (`docs/arquitetura.md`, `ARCHITECTURE.md` ou o indicado nas notas);
    - a árvore de pastas (2 ou 3 níveis) e o manifesto (`pyproject.toml`, `package.json`...);

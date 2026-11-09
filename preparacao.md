@@ -22,6 +22,7 @@ O kit contém arquivos para copiar — `orquestrador.md`, `skills/` (com `catalo
 |---|---|
 | `Confluent.Kafka`, `confluent-kafka`, `kafka-python`, `aiokafka`, `kafkajs` | `kafka` |
 | `*.tf`, `cdk.json`, `serverless.yml`, `template.yaml` (SAM), `AWSSDK.*`, `boto3` | `aws` |
+| `*.tf` (em qualquer pasta, ex.: `infra/`) | `terraform` |
 | `Microsoft.AspNetCore.*` / SDK `Microsoft.NET.Sdk.Web`, `fastapi`, `flask`, `django`, `express`, `*.openapi.*`/`openapi.*` | `api` |
 | `Microsoft.EntityFrameworkCore*`, `Dapper`, `Npgsql`, `Microsoft.Data.SqlClient`, `sqlalchemy`, `psycopg*`, `asyncpg`, `alembic`, pasta `Migrations/` | `sql` |
 | `MongoDB.Driver`, `pymongo`, `motor`, `AWSSDK.DynamoDBv2`, `dynamodb` com `boto3`/`aioboto3`, `StackExchange.Redis`, `redis` | `nosql` |

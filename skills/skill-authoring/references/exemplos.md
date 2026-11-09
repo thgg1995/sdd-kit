@@ -3,7 +3,7 @@
 ## Lado a lado
 | Ruim | Bom | Por quê |
 |---|---|---|
-| "Siga boas práticas de segurança." | "Políticas IAM por `aws_iam_policy_document`, com ações e recursos específicos; `*` só nas ações que a AWS não permite restringir, com exceção registrada no plano (§22)." | o reviewer consegue conferir no diff |
+| "Siga boas práticas de segurança." | "Políticas IAM com ações e recursos específicos; `*` só nas ações que a AWS não permite restringir, com exceção registrada no plano (§22)." | o reviewer consegue conferir no diff |
 | "Use uma arquitetura limpa." | "`handler.py` só converte o evento e chama `service.run_cycle`; regras em `service.py`, sem boto3; boto3 só em `aws.py`." | diz onde cada coisa fica |
 | "Teste bem o código." | "Cada FR tem um teste `test_FR<nnn>_<caso>`; boto3 com `botocore.stub.Stubber`, sem rede." | nome e ferramenta verificáveis |
 | "Use a versão mais recente do Python." | (nada: versão é da stack declarada, não da skill) | skill não escolhe stack |
@@ -12,7 +12,7 @@
 
 ## Erros já vistos em propostas
 - **Exemplo inválido**: referência de Step Functions com `Catch` num estado `Pass` — a ASL não permite `Catch` em `Pass`. O dev teve de trocar por `Parallel`. Verifique cada exemplo com o comando de validação da ferramenta ou contra a documentação oficial.
-- **Regra que não funciona na prática**: "testes Terraform sempre com `mock_provider`" — o mock simula também o JSON do `aws_iam_policy_document`, e o teste por `jsondecode` que a própria skill exigia deixou de funcionar. Os dois devs desviaram. Quando duas regras da skill dependem uma da outra, confira que funcionam juntas.
+- **Regra que não funciona na prática**: "testes Terraform sempre com `mock_provider`" — o mock simula também o JSON do `aws_iam_policy_document`, e o teste por `jsondecode` que a própria skill exigia deixou de funcionar. Os dois devs desviaram. Quando duas regras da skill dependem uma da outra, confira que funcionam juntas. (A `terraform` resolveu montando as políticas com `jsonencode`: `references/testes.md`.)
 - **Regra que só vale para a feature**: limites, nomes e números da spec copiados para a skill. Vão para o `Desenho técnico`.
 - **Sobreposição**: skill nova repetindo regras de IAM que já estão em `aws-infra`. Aponte para a skill vizinha em vez de copiar.
 

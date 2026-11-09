@@ -35,11 +35,11 @@ specs/<f>/techlead/skills/<nome>/
 - Índice no fim do `SKILL.md`, uma linha por arquivo: `- references/<assunto>.md — ler quando <gatilho concreto>`.
 
 ## Como escrever as regras
-1. **Imperativo e verificável**: "Políticas por `aws_iam_policy_document`; teste por `jsondecode`", não "use boas práticas de IAM". O reviewer precisa conseguir dizer se foi cumprida olhando o diff.
+1. **Imperativo e verificável**: "Política IAM por `jsonencode` no próprio recurso; teste por `jsondecode`", não "use boas práticas de IAM". O reviewer precisa conseguir dizer se foi cumprida olhando o diff.
 2. **Uma regra, um lugar**: não repita a constitution nem outra skill. Aponte: "Complementa `aws-infra`; em conflito, vale a constitution". Cite a seção da constitution que a regra detalha (`§22`).
 3. **Proporcional**: só o que o tipo de aplicação usa de fato. Nada de camada, padrão ou ferramenta "para o futuro".
 4. **Sem escolha de stack**: a skill não troca linguagem, versão, runtime nem acrescenta ferramenta principal; ela diz como usar a stack declarada.
-5. **Verificada**: todo exemplo de código e configuração tem de ser válido. Confira contra a documentação oficial, um comando de validação (`terraform validate`, `validate-state-machine-definition`, linter, compilador) ou código existente que funciona. O que não deu para verificar vai marcado `> Não verificado: <o quê> — <como verificar>`, para o dev provar na primeira tarefa.
+5. **Verificada**: todo exemplo de código e configuração tem de ser válido. Confira contra a documentação oficial, um comando de validação (`terraform validate`, `validate-state-machine-definition`, linter, compilador) ou código existente que funciona. Exemplos em Python e C# seguem a convenção de `references/modelo.md` e são validados com `python -I <kit>/tests/validar_exemplos.py <pasta da skill>` (lint, build e testes; `<kit>` é `.agents/kit` no workspace). O que não deu para verificar vai marcado `> Não verificado: <o quê> — <como verificar>`, para o dev provar na primeira tarefa.
 6. **Exceções explícitas**: quando a regra tem exceção conhecida (ex.: ação AWS que só aceita `*`), escreva a exceção e o que exigir para usá-la ("registrada no plano").
 7. **Idioma**: texto em `IDIOMA` do `AGENTS.md`; identificadores, comandos e nomes técnicos como estão.
 8. **Sem dado do projeto**: nada de nomes de recursos, contas, URLs ou regras de negócio da feature. A skill vale para qualquer feature do mesmo tipo.
@@ -60,7 +60,7 @@ specs/<f>/techlead/skills/<nome>/
 - [ ] `SKILL.md` com até 150 linhas; frontmatter só com `name` e `description`, e a `description` termina com o gatilho.
 - [ ] Estrutura do repositório e convenções da 1ª tarefa estão no `SKILL.md`.
 - [ ] Cada regra é verificável no diff e não repete constitution nem outra skill.
-- [ ] Todo exemplo foi verificado, ou está marcado `Não verificado` com o modo de verificar.
+- [ ] Todo exemplo foi verificado (Python e C#: `tests/validar_exemplos.py` sem falha), ou está marcado `Não verificado` com o modo de verificar.
 - [ ] Cada arquivo de `references/` tem um gatilho no índice e se entende sozinho.
 - [ ] Nada específico desta feature nem de uma ferramenta de IA.
 - [ ] `catalog-entry.yaml` com `stacks`/`techs`, `rules`, `trigger` e `loaded_by`.

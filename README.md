@@ -54,3 +54,130 @@ skills/<skill>/
 - **`references/`**: exemplos, padrões completos, tabelas e casos especiais. Pode crescer à vontade; cada arquivo trata de um assunto e deve ser entendível sozinho.
 - Regra estrutural (layout do projeto, convenções que afetam a primeira tarefa) fica no `SKILL.md`, nunca só em `references/`, para não haver retrabalho.
 - Registre a skill no `catalog.yaml` (`stacks`/`techs`/`always`, `trigger`, `loaded_by`, `rules`).
+- Exemplos de código em Python e C# seguem a convenção de `skills/skill-authoring/references/modelo.md` e são validados com `python -I tests/validar_exemplos.py skills/<skill>` (lint, build e testes).
+
+## Alterações recentes
+
+### 2026-11-09 — arquitetura de back-end, Clean Code e SOLID, padrões de projeto e Terraform
+Estas mudanças dão ao tech lead, ao dev e ao reviewer padrões escritos para três assuntos que o kit não cobria: a estrutura interna das aplicações de back-end, a escrita do código (Clean Code, SOLID e padrões de projeto) e a IaC com Terraform. Os exemplos de código das skills passam a ser validados por script. A primeira parte (a skill `clean-architecture`, a primeira versão da `clean-code` e o §32) já está no commit `8bef73a`; o resto entra neste commit.
+
+| Tema | O que muda | Commit |
+|---|---|---|
+| Constitution | §32 (versão 2.1.0) e §33 (2.2.0) | `8bef73a` e este |
+| Arquitetura de back-end | skill `clean-architecture`, com níveis 0 a 3 | `8bef73a` |
+| Código | `clean-code` vira `clean-code-solid`, com SOLID e 5 referências com exemplos | este |
+| Padrões de projeto | skill `design-patterns`, com 26 referências | este |
+| Terraform e AWS | skill `terraform`; `aws-infra` e `aws-serverless` reorganizadas | este |
+| Validação de exemplos | `tests/validar_exemplos.py` | este |
+| Processo | skills por papel, regra 8 do orquestrador, tech `terraform` | `8bef73a` e este |
+
+#### Constitution (`templates/constitution.md`, 2.0.0 → 2.2.0)
+- **§32** (2.1.0, `8bef73a`): "No back-end, regra de negócio NUNCA depende de framework, SDK, driver ou formato de transporte; entrada e saída ficam em adaptadores."
+- **§33** (2.2.0): "Recurso que guarda dado persistente DEVE ter proteção contra destruição acidental." Fica na seção V, depois do §23, separado por um comentário HTML para o Markdown não renumerar a lista. A numeração não muda porque as skills citam as regras pelo número.
+
+#### Skills novas
+**`clean-architecture`** (`8bef73a`; `SKILL.md` com 75 linhas e 6 referências)
+- Estrutura interna proporcional à regra de negócio: nível 0 (sem regra: integração direta, ou adaptador chamando adaptador), 1 (um caso de uso: três módulos), 2 (serviço: pastas por camada) e 3 (domínio rico). Na dúvida entre dois níveis, vale o menor.
+- Tabela de camadas (domain, application, entrypoints, infrastructure e composition root) com o que cada uma pode importar; regras dos níveis 1 a 3 (adaptador de entrada, tipos, erros, portas, composition root, transação); proibições (classe que só repassa, repositório genérico, pasta `utils/`, mediator e CQRS sem decisão registrada).
+- Só back-end (`dotnet`, `python`, `node`, `go`, `java`), exceto biblioteca; nunca front-end nem IaC.
+- Referências por papel da aplicação: `api.md`, `consumer.md`, `producer.md`, `tarefa-orquestrada.md`, `job.md` e `dominio-rico.md` (nível 3).
+- Os nomes de pastas e projetos de cada nível estão na `python-backend` e na `dotnet-backend` (seção "Estrutura (§32)").
+
+**`clean-code-solid`** (substitui a `clean-code` de `8bef73a`, renomeada com `git mv`; `SKILL.md` com 91 linhas e 5 referências)
+- Clean Code: limites do linter (complexidade até 10 e parâmetros até 5; o ruff mede os dois com `C901` e `PLR0913`; no .NET, a CA1502 mede a complexidade e o reviewer confere os parâmetros), nomes, funções, classes e módulos, objetos e dados, erros, comentários, simplicidade e concorrência.
+- SOLID: uma tabela com a regra verificável de cada princípio e, no back-end, a skill que aplica a parte estrutural.
+- "Fora desta skill": formatação, testes, fronteira com terceiros, composition root e tipos de erro apontam para a skill dona do assunto.
+- Vale para back-end e front-end (`react`, `angular`, `vue`); nunca IaC.
+- Sem repetição, três regras vieram de outras skills, que agora só apontam para cá:
+  - composição em vez de herança, que estava na `design-patterns`;
+  - interface com uma implementação só, que estava na `clean-architecture` e virou a linha O;
+  - "diga, não pergunte", para onde a `dominio-rico.md` agora aponta.
+- A linha I tem exceção explícita para a porta de repositório por entidade, para não contradizer a `design-patterns`.
+- Referências com exemplos em Python e .NET, validados pelo script:
+  - `responsabilidade-unica.md`: comissão de vendas, com a regra e o layout do CSV em módulos separados;
+  - `aberto-fechado.md`: lista de regras de risco; para os outros sintomas, aponta para Strategy, Decorator e Observer;
+  - `substituicao-de-liskov.md`: descontos, com uma suíte de contrato que roda em todas as implementações;
+  - `segregacao-de-interfaces.md`: uma porta por canal de notificação;
+  - `inversao-de-dependencia.md`: o que entra pelo construtor, o que entra por parâmetro e o que o composition root cria; teste sem `patch`.
+
+**`design-patterns`** (`SKILL.md` com 67 linhas e 26 referências)
+- Organizada por sintoma: um padrão só entra com sintoma no plano ou no código, e "pode precisar no futuro" não conta. Há regras para o tech lead (campo `Padrões` do Desenho técnico), para o dev (`Decisões não previstas`) e para o reviewer (sintoma sem padrão, padrão sem sintoma).
+- Tabela de sintomas de excesso (ex.: Strategy com uma estratégia só → código direto).
+- Um arquivo por padrão: os 23 GoF mais Repository, Unit of Work e Specification. Cada um tem as seções Quando não usar, Forma, Python, .NET e Como testar. Os padrões de integração (outbox, consumer idempotente, retentativa) continuam nas skills de tecnologia.
+- Só back-end, como a `clean-architecture`.
+
+**`terraform`** (`SKILL.md` com 84 linhas e 6 referências)
+- Regras sobre:
+  - estrutura: três layouts e os arquivos de uma raiz;
+  - versões: Terraform 1.11 ou mais novo, a raiz fixa a versão exata, e o lock file leva os hashes das plataformas;
+  - estado e ambientes: backend S3 com lock nativo, um estado por componente e ambiente, `envs/<env>.tfvars` e `envs/<env>.backend.hcl`, `allowed_account_ids`;
+  - código HCL;
+  - proteção de dados (§33): `prevent_destroy` mais a proteção do próprio serviço, e destruir um recurso protegido leva dois PRs;
+  - segredos: nunca no estado, com argumentos write-only e valores efêmeros;
+  - refatoração: blocos `moved`, `import` e `removed`;
+  - testes, plan e apply, e o que vai no Desenho técnico.
+- Proibições, entre elas workspace do CLI para separar ambientes, `terraform_remote_state` entre donos diferentes e provider dentro de módulo.
+- Referências:
+  - `estrutura-e-ambientes.md`, `estado.md`, `modulos.md` e `testes.md`;
+  - `pipeline.md`: GitHub Actions com OIDC (`fmt`, `validate`, `test`, `plan`, e `apply` do plano salvo, com aprovação em produção);
+  - `entre-repositorios.md`: valores trocados por SSM, que estavam na `aws-serverless`.
+- Decisões:
+  - ambientes por tfvars e backend por ambiente;
+  - sem tflint nem scanner de segurança por enquanto;
+  - políticas IAM montadas com `jsonencode`, porque o `mock_provider` inventa o JSON do `aws_iam_policy_document` e quebrava o teste por `jsondecode` (lição que a `skill-authoring` já registrava);
+  - todo `run` de teste com `command = plan`: nada é criado, e a limpeza no fim do teste não esbarra no `prevent_destroy`.
+
+#### Skills alteradas
+- `aws-infra`: agora cobre o que a AWS exige de qualquer recurso: tags, segredos, IAM (com as ações que só aceitam `*`), criptografia, rede e SQS (que veio da `aws-serverless`). Foram para a `terraform` a escolha de ferramenta, a pasta `infra/`, o plan antes do apply e os módulos. Ganhou a `references/limites.md`, com os limites de SQS e DynamoDB que estavam na `limites.md` da `aws-serverless`. Passa a ser carregada também pelo tech lead.
+- `aws-serverless`: fica só com Lambda, Scheduler e Step Functions.
+  - Foram para a `terraform` a estrutura do repositório, os testes de Terraform, a forma das políticas IAM e os valores entre repositórios.
+  - Foram para a `aws-infra` as regras de SQS, as ações que exigem `*` e os limites de SQS e DynamoDB. A `limites.md` da `aws-serverless` ficou com Step Functions, JSONata, Lambda, Scheduler e as permissões de log.
+  - A estrutura da Lambda segue o nível da `clean-architecture` (`8bef73a`).
+- `code-review`: o mapa área → regra ganhou linhas para `clean-architecture`, `clean-code-solid`, `design-patterns`, `terraform`, `aws-infra` e `aws-serverless`.
+- `python-backend` e `dotnet-backend`: limites do linter e seção "Estrutura (§32)" com os nomes de cada nível (`8bef73a`); referências renomeadas para a `clean-code-solid`.
+- `unit-testing`: xUnit com o `Assert` do próprio xUnit, sem FluentAssertions.
+- `skill-authoring`:
+  - a regra 5 e o checklist exigem exemplos Python e C# validados pelo `tests/validar_exemplos.py`;
+  - a `modelo.md` ganhou a seção "Exemplos validáveis (Python e C#)";
+  - os exemplos de regra boa deixaram de citar o `aws_iam_policy_document`.
+- `clean-architecture`: a `consumer.md` aponta SQS para a `aws-infra`.
+
+#### Processo
+- `orquestrador.md`, seção 5:
+  - o tech lead carrega `clean-architecture` e `design-patterns` quando a feature tem back-end;
+  - dev e reviewer carregam a `clean-code-solid` em todo repositório de aplicação, e a `clean-architecture` e a `design-patterns` só no back-end (nunca em front-end, IaC ou biblioteca).
+- `orquestrador.md`, regra 8: no trabalho pequeno, a sessão principal implementa seguindo o papel `dev`, inclusive o relatório, com as skills da seção 5.3.
+- `roles/techlead.md`:
+  - classificação de cada repositório por papéis (API, consumer, producer, tarefa orquestrada, job...) e por nível;
+  - o campo `Nível` na primeira linha do Desenho técnico (os dois itens acima são de `8bef73a`);
+  - a `design-patterns` entre as skills lidas.
+- `preparacao.md` e `templates/spec-input.md`: tech nova `terraform`, detectada por `*.tf` em qualquer pasta. Antes, um serviço Python com `infra/` nunca ativaria a skill.
+- `skills/catalog.yaml`: entradas novas (`clean-architecture`, `clean-code-solid`, `design-patterns`, `terraform`) e gatilhos, regras e `loaded_by` revistos nas skills AWS.
+
+#### Validador de exemplos (`tests/validar_exemplos.py`)
+- Extrai os blocos Python e C# dos `.md` de uma skill e valida todos de uma vez:
+  - Python: `ruff format --check`, `ruff check` com a configuração da `python-backend` e `pytest`;
+  - C#: compilação com `Nullable` e `TreatWarningsAsErrors`, e testes xUnit.
+- Convenção:
+  - Python: bloco cuja 1ª linha é `# <arquivo>.py`;
+  - C#: bloco com `[Fact]`/`[Theory]` é teste, bloco que começa com `// composition root` vira um método que recebe `services`, e bloco que começa com `// trecho` não é validado.
+- Exige o Python da versão mínima da `python-backend` (3.12+). Use `--python <executável>` quando o padrão da máquina for mais antigo; `--formatar` aplica o `ruff format` aos blocos.
+
+#### Como validar
+```
+python -I tests/validar_exemplos.py skills/design-patterns --python <python 3.12+ com pytest>
+python -I tests/validar_exemplos.py skills/clean-code-solid --python <python 3.12+ com pytest>
+```
+- Resultado esperado:
+  - `design-patterns`: 67 testes Python (52 arquivos) e 62 testes C#;
+  - `clean-code-solid`: 25 testes Python (11 arquivos) e 23 testes C#.
+
+  Requer ruff, pytest e o SDK do .NET.
+- Teste negativo já feito: sem o piso em zero do `DescontoFixo`, a suíte de contrato de Liskov falha nas duas linguagens.
+- Terraform: os 14 blocos HCL passam no `terraform fmt -check`. `validate` e `test` não foram rodados, porque baixam o provider AWS; cada referência traz o aviso "Não verificado" com o comando. O ponto mais incerto é o `override_during = plan` da `testes.md`.
+- Todo `SKILL.md` alterado tem até 150 linhas, o índice de referências de cada skill bate com os arquivos, e cada regra movida aparece num lugar só.
+
+#### Pendências conhecidas
+- Verificar os exemplos da `terraform` (`init`, `validate` e `test`) e, se o time quiser, ensinar o validador a ler HCL.
+- A `aws-serverless` não cobre Lambda em .NET.
+- Discutidos e não implementados: um portão de simplicidade no processo (regra na constitution, critério do reviewer para abstração nova e um padrão explícito para o trabalho pequeno) e a skill de front-end.

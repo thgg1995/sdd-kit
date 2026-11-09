@@ -53,7 +53,6 @@ O tech lead escolhe o nível pelo critério e o registra no Desenho técnico; na
 ## Proibido
 - Regra de negócio em adaptador de entrada ou de saída (§32).
 - domain ou application importando framework, SDK, driver ou tipo de transporte (§32).
-- Interface com uma única implementação e sem I/O nem não determinismo por trás.
 - Caso de uso ou classe que só repassa a chamada com os mesmos argumentos (ex.: serviço que só chama o repositório).
 - Repositório genérico (`Repository<T>` com CRUD genérico): a porta tem só as operações que os casos de uso usam.
 - O mesmo tipo duplicado em application e domain só para mapear um no outro.

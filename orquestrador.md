@@ -20,7 +20,7 @@ Depois da preparação, o kit só volta a ser consultado na etapa `stack` (`cata
 5. **Ler uma vez**: não releia arquivo que já está em contexto; use `git diff` / intervalos de linhas específicos em vez de arquivos inteiros.
 6. **Loops limitados**: no máximo 2 ciclos de correção por repositório. Depois disso, pare e escale para o humano.
 7. **Especialização por skill, não por agente**: nunca crie subagentes por tecnologia (ex.: "agente Kafka"). O especialista é o mesmo agente carregando a skill certa.
-8. **Sem subagentes para trabalho pequeno**: se a feature envolver 1 repositório e ≤ 10 tarefas, implemente direto na sessão principal e use apenas o reviewer.
+8. **Sem subagentes para trabalho pequeno**: se a feature envolver 1 repositório e ≤ 10 tarefas, implemente direto na sessão principal e use apenas o reviewer. Ao implementar, a sessão principal segue o papel `dev` (`.agents/roles/dev.md`, inclusive o relatório), com as skills obrigatórias e condicionais da seção 5.3.
 9. **Agentes novos com handoff, não contexto herdado**: tech lead e PM de correção começam do zero a cada rodada e se situam por arquivos curtos em disco (`reports/techlead.md`, `research.md`, a seção de correção do plano de cada repositório). Não continue um agente cujo contexto já carrega uma rodada inteira de leitura: o custo da continuação é o contexto inteiro de novo. Correção pequena (dev e reviewer) recebe só a fatia da correção.
 10. **Limites da plataforma antes do código**: o tech lead confronta os contratos e o fluxo de dados com os limites dos serviços (tamanho, precisão, tempo, taxa) no pior caso, antes de congelar os contratos. Descobrir isso no QA custa uma volta inteira do pipeline.
 
@@ -186,7 +186,7 @@ Pendência do tech lead num artefato do PM: marcador `[TECH LEAD: <o que decidir
 | Papel | Instruções | Skills | Modelo | Escreve |
 |---|---|---|---|---|
 | **pm** | `.agents/roles/pm.md` (modos: entrevista, decomposição, specify, clarify, plan, tasks, correcao, analyze, converge) | `sdd` + `spec-kit` | forte | artefatos de `specs/_input/` e `specs/<f>/` do modo (spec, clarifications, stack, plano de produto, tarefas, `reports/analyze.md`, `reports/converge.md`); somente leitura no código |
-| **techlead** | `.agents/roles/techlead.md` (modos: triagem, desenho) | `architecture` + `sdd` + `clean-architecture` (se a feature tem repositório de back-end) + a skill da stack de cada repositório + condicionais; `skill-authoring` quando propõe skill | forte | `contracts/`, seções `[TECH LEAD]` do plano, `Desenho técnico` de cada repositório, `depends_on`, propostas de skill, `reports/techlead.md`; somente leitura no código |
+| **techlead** | `.agents/roles/techlead.md` (modos: triagem, desenho) | `architecture` + `sdd` + `clean-architecture` e `design-patterns` (se a feature tem repositório de back-end) + a skill da stack de cada repositório + condicionais; `skill-authoring` quando propõe skill | forte | `contracts/`, seções `[TECH LEAD]` do plano, `Desenho técnico` de cada repositório, `depends_on`, propostas de skill, `reports/techlead.md`; somente leitura no código |
 
 **Continuidade dos agentes**
 - **PM de autoria**: o mesmo agente da entrada (quando houver) ao tasks. Se a ferramenta permite continuar um subagente com o contexto preservado, o orquestrador o continua a cada etapa com o prompt de continuação (5.4) e registra o identificador em `Agentes em curso`; senão, ou se ele não puder mais ser continuado, dispara um PM novo no mesmo modo, que se situa pelo disco.
@@ -212,11 +212,11 @@ dev ──► reviewer
 ```
 | Papel | Instruções | Skills obrigatórias | Skills condicionais | Modelo | Escreve |
 |---|---|---|---|---|---|
-| **dev** | `.agents/roles/dev.md` | skill da stack do repo + `unit-testing` + `clean-code` e `clean-architecture` (regra abaixo) | por gatilho da tarefa (ex.: mensageria, infra) | forte | código + testes unitários; `reports/<repo>/dev.md` |
-| **reviewer** | `.agents/roles/reviewer.md` | `code-review` + skill da stack do repo + `clean-code` e `clean-architecture` (regra abaixo) | as mesmas condicionais que o dev carregou | forte | somente `reports/<repo>/review.md` (somente leitura no código) |
+| **dev** | `.agents/roles/dev.md` | skill da stack do repo + `unit-testing` + `clean-code-solid`, `clean-architecture` e `design-patterns` (regra abaixo) | por gatilho da tarefa (ex.: mensageria, infra) | forte | código + testes unitários; `reports/<repo>/dev.md` |
+| **reviewer** | `.agents/roles/reviewer.md` | `code-review` + skill da stack do repo + `clean-code-solid`, `clean-architecture` e `design-patterns` (regra abaixo) | as mesmas condicionais que o dev carregou | forte | somente `reports/<repo>/review.md` (somente leitura no código) |
 
 - O orquestrador decide as skills condicionais lendo `repos/<repo>/tasks.md` e o índice da seção 3, e as informa explicitamente no prompt. O subagente não procura skills por conta própria.
-- `clean-code`: todo repositório de aplicação, de back-end ou de front-end; nunca IaC (`terraform`). `clean-architecture`: só repositório de back-end (stack `dotnet`, `python`, `node`, `go` ou `java`), exceto biblioteca (`kind: lib`); repositório de front-end (`react`, `angular`, `vue`) nunca a recebe.
+- `clean-code-solid`: todo repositório de aplicação, de back-end ou de front-end; nunca IaC (`terraform`). `clean-architecture` e `design-patterns`: só repositório de back-end (stack `dotnet`, `python`, `node`, `go` ou `java`), exceto biblioteca (`kind: lib`); repositório de front-end (`react`, `angular`, `vue`) nunca as recebe.
 - Só achados `bloqueante` do reviewer voltam para o dev; `sugestão` fica registrada no relatório.
 - **Ciclo de correção enxuto**: o prompt do dev lista as tarefas da fase de correção; ele lê só elas, a seção de correção do `plan.md` e os arquivos que o relatório anterior cita, não o plano inteiro. O reviewer julga só o diff incremental.
 

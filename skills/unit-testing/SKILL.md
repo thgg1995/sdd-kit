@@ -16,7 +16,7 @@ description: Como escrever testes unitários no padrão do time (.NET e Python).
 - Sem dependência de ordem, de relógio ou de rede: injete relógio e dependências.
 
 ## .NET
-- xUnit + FluentAssertions; mocks com NSubstitute. <!-- TIME: ou Moq/NUnit -->
+- xUnit, com as asserções do próprio xUnit (`Assert`); mocks com NSubstitute. <!-- TIME: ou Moq/NUnit -->
 - Projeto de teste espelha o projeto de produção (`<Projeto>.Tests`).
 - Rodar um teste: `dotnet test --filter "FullyQualifiedName~<Nome>"`.
 

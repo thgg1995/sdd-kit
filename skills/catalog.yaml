@@ -73,11 +73,17 @@ skills:
     trigger: repositório de back-end (stack dotnet, python, node, go ou java; exceto kind lib) — Desenho técnico, e tarefa que cria ou altera módulo, caso de uso, ponto de entrada ou adaptador
     loaded_by: techlead, dev, reviewer
 
-  - name: clean-code
+  - name: clean-code-solid
     stacks: [dotnet, python, node, go, java, react, angular, vue]
-    rules: "§29"
+    rules: "§19, §29"
     trigger: dev implementa ou reviewer revisa código de aplicação, de back-end ou de front-end (nunca IaC)
     loaded_by: dev, reviewer
+
+  - name: design-patterns
+    stacks: [dotnet, python, node, go, java]
+    rules: "—"
+    trigger: repositório de back-end (exceto kind lib) — Desenho técnico (campo Padrões), e tarefa em que o plano ou o código mostra um sintoma do índice da skill
+    loaded_by: techlead, dev, reviewer
 
   - name: api-design
     techs: [api]
@@ -103,18 +109,25 @@ skills:
     trigger: tarefa cria ou altera coleções/tabelas NoSQL ou suas consultas
     loaded_by: dev, reviewer
 
+  - name: terraform
+    stacks: [terraform]
+    techs: [terraform]
+    rules: "§3-4, §20-21, §26, §29, §33"
+    trigger: repositório com stack terraform, ou tarefa que cria ou altera arquivos .tf (estrutura, estado, ambientes, módulos, testes, pipeline de IaC)
+    loaded_by: techlead, dev, reviewer
+
   - name: aws-infra
     stacks: [terraform]
     techs: [aws]
-    rules: "§19-22"
-    trigger: tarefa envolve IaC, IAM, segredos, filas, buckets ou deploy
-    loaded_by: dev, reviewer
+    rules: "§11, §19, §21-22, §25"
+    trigger: tarefa cria ou altera recurso AWS (IAM, segredos, filas, buckets, bancos, rede)
+    loaded_by: techlead, dev, reviewer
 
   - name: aws-serverless
     stacks: [terraform]
     techs: [aws]
     rules: "§9, §20-22, §24-25, §27"
-    trigger: tarefa cria ou altera função Lambda, fluxo Step Functions, agendamento ou valores compartilhados entre estados Terraform
+    trigger: tarefa cria ou altera função Lambda, fluxo Step Functions ou agendamento
     loaded_by: techlead, dev, reviewer
 
   - name: python-lib

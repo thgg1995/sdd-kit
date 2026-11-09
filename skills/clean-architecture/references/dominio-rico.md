@@ -10,7 +10,7 @@ Aplica-se quando o nível do repositório é 3: entidades com estados e regras q
 
 ## Divisão do trabalho
 - domain decide o que pode e o que não pode; application conduz o roteiro: carrega pela porta, chama o método da entidade, salva e publica.
-- Condição de regra no caso de uso (ex.: `if pedido.status == ...` antes de alterar) → vira método da entidade.
+- Condição de regra no caso de uso é sinal de método que falta na entidade ("diga, não pergunte", na `clean-code-solid`).
 
 ## Fronteira e persistência
 - A skill da stack define como a linguagem impõe a regra de dependência neste nível (ex.: um projeto por camada no .NET).

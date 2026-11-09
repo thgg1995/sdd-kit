@@ -1,6 +1,6 @@
 # Consumer de mensagens
 
-Aplica-se quando o repositório consome mensagens de fila, tópico ou stream. O *como* (deduplicação, retentativas, DLQ, confirmação) está na skill da tecnologia (ex.: `kafka-messaging`; SQS na `aws-serverless`); aqui fica a camada de cada parte.
+Aplica-se quando o repositório consome mensagens de fila, tópico ou stream. O *como* (deduplicação, retentativas, DLQ, confirmação) está na skill da tecnologia (ex.: `kafka-messaging`; SQS na `aws-infra`); aqui fica a camada de cada parte.
 
 ## Nível
 - Um tipo de mensagem com uma regra: nível 1.

@@ -37,6 +37,9 @@ Aqui ficam **somente regras**. O "como" fica nas skills, que referenciam cada re
 22. Permissões DEVEM seguir o menor privilégio.
 23. Toda entrada externa DEVE ser validada na borda.
 
+<!-- O §33 entrou na versão 2.2.0; a numeração não muda porque as skills citam as regras pelo número. -->
+33. Recurso que guarda dado persistente DEVE ter proteção contra destruição acidental.
+
 ## VI. Observabilidade
 24. Logs DEVEM ser estruturados e carregar um id de correlação propagado entre serviços.
 25. Todo serviço DEVE expor saúde e métricas de erro e latência; consumers, também atraso e falhas.
@@ -57,4 +60,4 @@ Aqui ficam **somente regras**. O "como" fica nas skills, que referenciam cada re
 - Alterações exigem aprovação do humano e incremento de versão (MAJOR: regra removida/redefinida; MINOR: regra nova; PATCH: redação). Ao alterar uma regra, revise as skills que a referenciam.
 - Exceções são registradas no `plan.md` da feature, com motivo e alternativa descartada, e não valem para outras features.
 
-**Versão**: 2.1.0 | **Ratificada em**: <data> | **Última alteração**: <data>
+**Versão**: 2.2.0 | **Ratificada em**: <data> | **Última alteração**: <data>

@@ -17,12 +17,15 @@ description: Como revisar um diff contra a constitution e as skills do time e re
 | Producers/consumers | §10–14 | `kafka-messaging` |
 | Migrations, queries SQL | §15–17, §19 | `data-relational` |
 | Coleções/tabelas NoSQL | §15, §17–19 | `data-nosql` |
-| Infra, IAM, segredos | §19–22 | `aws-infra` |
+| Terraform: estrutura, versões, estado, proteção de dados, segredos no estado, testes | §20–21, §26, §33 | `terraform` |
+| Recursos AWS: IAM, segredos, criptografia, rede, SQS | §11, §19, §21–22, §25 | `aws-infra` |
+| Lambda, Step Functions, agendamento | §9, §22, §24–25 | `aws-serverless` |
 | Logs, tracing, health | §24–25 | `observability` |
 | Testes | §26–28 | `unit-testing` |
 | Qualquer código | §29–31 | skill da stack |
 | Camadas, imports e adaptadores (back-end) | §32 | `clean-architecture` |
-| Nomes, funções, erros, comentários; limites do linter | §29 | `clean-code` |
+| Nomes, funções, classes, objetos, erros, comentários, SOLID; limites do linter | §29 | `clean-code-solid` |
+| Padrões de projeto: sintoma sem padrão, padrão sem sintoma (back-end) | — | `design-patterns` |
 | Fronteiras entre serviços | §1–4 | contratos em `contracts/` |
 
 ## Achados

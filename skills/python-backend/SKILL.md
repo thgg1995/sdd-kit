@@ -11,7 +11,7 @@ description: Padrões de código Python do time (tipagem, async, dependências, 
 
 ## Lint e build (constitution §29)
 - `ruff check` e `ruff format` sem erros novos.
-- Limites da `clean-code` no `pyproject.toml`:
+- Limites da `clean-code-solid` no `pyproject.toml`:
 ```toml
 [tool.ruff.lint]
 extend-select = ["C901", "PLR0913"]
