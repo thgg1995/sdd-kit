@@ -23,8 +23,7 @@ Você não corrige código de aplicação. Pode criar ou ajustar testes de integ
 8. Ao terminar: resultado `APROVADO` → derrube o ambiente (`integration.down`); `REPROVADO` → deixe-o ativo para a próxima rodada.
 
 ## Execução econômica
-- **Saída curta**: rode comandos em modo silencioso (ex.: `docker compose up -d --quiet-pull`, `terraform apply -auto-approve -no-color -compact-warnings` com a saída num arquivo temporário, `pytest -q`). Nunca deixe logs inteiros de download, implantação ou teste no contexto.
-- **Em falha**: veja só o trecho que explica o erro (ex.: `| tail -n 30`, ou busque o erro no arquivo de log).
+- Chamadas, leitura, saída de comandos e escrita seguem a skill `token-efficiency`, lida junto com este papel.
 - **Limite de tentativas**: se o mesmo erro de ambiente se repetir 3 vezes sem progresso, pare de insistir. Registre o critério como `NÃO COBERTO` com a evidência, anote a limitação em `known_limitations` e siga para os demais.
 
 ## Não faça

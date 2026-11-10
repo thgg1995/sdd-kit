@@ -17,7 +17,7 @@ Depois da preparação, o kit só volta a ser consultado na etapa `stack` (`cata
 2. **Arquivos em vez de chat**: todos os artefatos e handoffs ficam em disco (`specs/<feature>/...`). Passe *caminhos* aos subagentes, nunca conteúdo colado.
 3. **Fatiamento de contexto**: dev e reviewer recebem SOMENTE a fatia do seu repositório: `specs/<f>/repos/<repo>/{plan.md,tasks.md}`, `specs/<f>/contracts/`, o `CATALOGO.md` da lib compartilhada (consumidores, somente leitura) e as skills definidas para eles na seção 5; nunca a spec completa nem o código da lib. PM e tech lead têm a visão da feature, mas leem código só por trecho; o qa lê só os critérios de aceite e os contratos.
 4. **Resumos, não despejos**: subagentes retornam ≤ 15 linhas (status, arquivos alterados, pendências, caminho do relatório). Detalhes vão no arquivo de relatório.
-5. **Ler uma vez**: não releia arquivo que já está em contexto; use `git diff` / intervalos de linhas específicos em vez de arquivos inteiros.
+5. **Comportamento econômico**: todo agente, inclusive você, segue a skill `token-efficiency` (chamadas, leitura, saída de comandos, escrita). Leia-a logo depois deste roteiro: `KIT/skills/token-efficiency/SKILL.md` antes da preparação, `.agents/skills/token-efficiency/SKILL.md` depois. Os subagentes a leem junto com o papel (template 5.4).
 6. **Loops limitados**: no máximo 2 ciclos de correção por repositório. Depois disso, pare e escale para o humano.
 7. **Especialização por skill, não por agente**: nunca crie subagentes por tecnologia (ex.: "agente Kafka"). O especialista é o mesmo agente carregando a skill certa.
 8. **Sem subagentes para trabalho pequeno**: se a feature envolver 1 repositório e ≤ 10 tarefas, implemente direto na sessão principal e use apenas o reviewer. Ao implementar, a sessão principal segue o papel `dev` (`.agents/roles/dev.md`, inclusive o relatório), com as skills obrigatórias e condicionais da seção 5.3.
@@ -38,6 +38,7 @@ workspace.yaml              # estado do workspace: data da preparação, versão
   bin/fluxo.py              # registro do fluxo: o orquestrador atualiza status.md e eventos.jsonl por ele
   bin/janela.py             # janela de acompanhamento (tkinter), aberta sozinha pelo fluxo.py; só lê arquivos, sem tokens
   bin/painel.py             # o mesmo painel no terminal (--watch), usado quando a janela não abre
+  bin/consumo.py            # consumo real de tokens da feature, somado dos transcritos da ferramenta; rodado fora do agente
   skills/<skill>/SKILL.md   # skills instaladas para este workspace
   roles/{pm,techlead,dev,reviewer,qa,donos}.md   # papéis e o mapa de donos (4.3)
   repos/<repo>.md           # notas por repositório: stack e comandos de build/teste/lint
@@ -72,7 +73,7 @@ Execute em ordem. Atualize `specs/<f>/status.md` **ao concluir cada etapa e a ca
 **Registro do fluxo** — atualize-o sempre por `python .agents/bin/fluxo.py` (um comando curto em vez de editar o arquivo; `--help` mostra o uso):
 - `iniciar <f> <repos...>` cria o `status.md`; `status <f> --etapa/--situacao/--proxima/--pendencias/--contratos/--qa/--agente`; `repo <f> <repo> --onda/--fase/--ciclo/--relatorio`.
 - Cada subagente: `inicio <f> <papel> [--repo] [--modo] [--modelo]` antes de delegar e `fim <f> <papel> [--repo] [--modo] [--modelo] --resultado "<uma linha>"` ao receber o retorno. `--modelo` é o nome do modelo usado pelo subagente (passe-o também no `consumo`); o painel soma os tokens por modelo.
-- **Consumo** (`--tokens`, `--ferramentas`, `--ms`) é obrigatório, não opcional: se veio com o retorno, passe-o no `fim`; se vier depois (em geral na notificação de conclusão do subagente, que chega após o retorno), registre-o ao chegar com `consumo <f> <papel> [--repo] [--modo] --tokens N --ferramentas N --ms N`. O `fim` sem consumo avisa, e o painel mostra quantas chamadas ficaram sem dados. Só a ferramenta que não informa consumo fica de fora.
+- **Consumo** (`--tokens`, `--ferramentas`, `--ms`) é obrigatório, não opcional: se veio com o retorno, passe-o no `fim`; se vier depois (em geral na notificação de conclusão do subagente, que chega após o retorno), registre-o com `consumo <f> <papel> [--repo] [--modo] --tokens N --ferramentas N --ms N` na mesma resposta da sua próxima ação, sem uma chamada só para isso. O `fim` sem consumo avisa, e o painel mostra quantas chamadas ficaram sem dados. Só a ferramenta que não informa consumo fica de fora. Esse número é o contexto final do subagente, não o consumo; o consumo real sai do `bin/consumo.py`, lido dos transcritos (skill `token-efficiency`).
 - `conferir-donos <f>`: confere o mapa de donos (4.3); sai com 1 e lista as falhas.
 - `conferir-prontidao <f> <repo>`: confere, só por arquivo, se o dev pode começar (desenho técnico completo, contratos citados existentes, tarefas com caminho, `Verificações`, `env.md`); sai com 1 e lista as falhas, e imprime avisos.
 - **Janela de acompanhamento**: o `fluxo.py` a abre sozinho. Se imprimir `aviso: a janela de acompanhamento não abriu (...)`, repasse ao humano a linha inteira, que traz o comando para acompanhar em outro terminal; o aviso sai uma vez por feature.
@@ -224,7 +225,7 @@ dev ──► reviewer
 ```
 Papel: <pm|techlead|dev|reviewer|qa>. Repo: <nome> em <path do workspace.yaml> (pm, techlead e qa: "todos da feature"). Stack: <stack>. Feature: <f>. Idioma: <IDIOMA>.
 Modo: <pm: entrevista|decomposição|specify|clarify|plan|tasks|correcao|analyze|converge; techlead: triagem|desenho>
-Leia: .agents/roles/<papel>.md (ele diz o que mais ler).
+Leia, na mesma chamada: .agents/roles/<papel>.md (ele diz o que mais ler) e .agents/skills/token-efficiency/SKILL.md.
 Carregue as skills (e somente elas): <obrigatórias> + <condicionais>
 Retorne: resumo de no máximo 15 linhas (pm, techlead e qa: 3 linhas).
 ```

@@ -31,6 +31,12 @@ skills:
     trigger: propor uma skill nova ou a atualização de uma existente
     loaded_by: techlead
 
+  - name: token-efficiency
+    always: true
+    rules: "—"
+    trigger: início do trabalho de qualquer papel, lida junto com o arquivo do papel (o orquestrador, logo depois do roteiro)
+    loaded_by: orquestrador, pm, techlead, dev, reviewer, qa
+
   - name: unit-testing
     always: true
     rules: "§26"

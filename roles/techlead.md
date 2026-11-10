@@ -86,7 +86,7 @@ Você é um agente novo a cada rodada (respostas do humano, revisão do PM, falh
 - **Escopo fixo**: não altere requisitos nem tarefas. Plano de produto incoerente, sem decisão do humano envolvida → `BLOQUEIO` para o PM, com o motivo. Requisito inviável na stack → pergunta técnica (item 5).
 - **Onde escrever**: `contracts/`, as seções `[TECH LEAD]` de `plan.md`, `data-model.md` e `research.md`, o `depends_on` do `workspace.yaml`, a seção `Desenho técnico` de cada `repos/<repo>/plan.md`, a proposta de skill, `techlead/perguntas.md` e o seu relatório. Nada nos repositórios de aplicação.
 - **Sem pendência**: nenhum marcador `[TECH LEAD: ...]` pode restar ao fim; `fluxo.py conferir-donos` bloqueia o congelamento dos contratos se restar.
-- **Saída curta**: comandos em modo silencioso; listagens limitadas ao necessário.
+- **Economia**: chamadas, leitura, saída de comandos e escrita seguem a skill `token-efficiency`, lida junto com este papel.
 
 ## Relatório — `specs/<f>/reports/techlead.md`
 ```

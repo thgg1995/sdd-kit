@@ -7,7 +7,7 @@ AGENTS.md             # configuração e roteamento; é o único arquivo que vai
 orquestrador.md       # roteiro do orquestrador (pipeline); a preparação o copia para .agents/
 preparacao.md         # preparação do workspace, lida do kit quando o workspace é preparado
 roles/                # pm, techlead, dev, reviewer, qa e donos.md (mapa de donos, lido por pm e techlead)
-bin/                  # fluxo.py (registro do fluxo), janela.py (acompanhamento em janela, abre sempre sozinha) e painel.py (o mesmo no terminal, só se a janela não abrir)
+bin/                  # fluxo.py (registro do fluxo), consumo.py (consumo real de tokens, pelos transcritos), janela.py (acompanhamento em janela, abre sempre sozinha) e painel.py (o mesmo no terminal, só se a janela não abrir)
 python_lib/           # biblioteca Python compartilhada (repositório git próprio; consumida do kit, não copiada)
 skills/
   catalog.yaml        # quando cada skill é instalada e o gatilho no índice
@@ -56,7 +56,147 @@ skills/<skill>/
 - Registre a skill no `catalog.yaml` (`stacks`/`techs`/`always`, `trigger`, `loaded_by`, `rules`).
 - Exemplos de código em Python e C# seguem a convenção de `skills/skill-authoring/references/modelo.md` e são validados com `python -I tests/validar_exemplos.py skills/<skill>` (lint, build e testes).
 
+## Uso eficiente de tokens
+
+A skill [`token-efficiency`](skills/token-efficiency/SKILL.md) traz as regras de economia que todo agente segue: chamadas agrupadas, leitura por trecho, saída curta de comandos, escrita por trecho e artefatos sem repetição. Ela é instalada sempre (`always: true`) e lida por todos os papéis junto com o arquivo do papel; o orquestrador a lê logo depois do roteiro (regra 5 da seção 1 e template 5.4 do `orquestrador.md`). Cada regra cita a métrica que a confere.
+
+O consumo real sai do `bin/consumo.py`, que soma o uso de cada chamada nos transcritos do Claude Code ou do Codex e grava um relatório com as métricas da skill e, ao lado, os indicadores de qualidade da execução:
+```
+python .agents/bin/consumo.py <feature>     # num workspace: grava specs/<feature>/reports/consumo.md
+python bin/consumo.py <feature> --raiz <workspace> --ate <AAAA-MM-DDTHH:MM> --saida <arquivo>   # a partir do kit
+```
+O `tokens` que o `fluxo.py` registra, e que o painel soma, é o contexto final de cada subagente, não o consumo. Como medir e comparar versões do kit: [`references/medicao.md`](skills/token-efficiency/references/medicao.md).
+
 ## Alterações recentes
+
+### 2026-11-10 — uso eficiente de tokens
+O consumo das execuções da feature 001 foi medido pelos transcritos das ferramentas, e não pelo número que o fluxo registra. Três descobertas guiaram as mudanças:
+- O `tokens` registrado no `eventos.jsonl` é o contexto final de cada subagente, não o consumo. No teste3, o registrado foi 2,2 mi e o real, 47,0 mi; o orquestrador nem era registrado.
+- O consumo é o número de chamadas vezes o contexto relido em cada uma. Cada subagente começa com 37 a 52 mil tokens no Claude Code (cerca de 25 mil no Codex) antes de ler qualquer arquivo, e cada resultado de ferramenta volta em todas as chamadas seguintes.
+- O orquestrador está entre os maiores consumidores: de 28% a 40% nas execuções do Claude Code (no teste3, empatado com o dev e o QA) e 57% dos agentes de trabalho no Codex, onde só as esperas custaram 25% da execução.
+
+| Tema | O que muda |
+|---|---|
+| Skill | `token-efficiency` reescrita: lida por todos os papéis, junto com o arquivo do papel |
+| Medição | `bin/consumo.py` (consumo e qualidade de cada execução) e `tests/test_consumo.py`, novos |
+| Processo | regra 5 da seção 1, registro do consumo e template 5.4 do `orquestrador.md` |
+| Papéis | as regras de saída curta saem de dev, qa, pm e techlead e vão para a skill |
+
+#### Skill `token-efficiency` (`SKILL.md` com 45 linhas e 2 referências)
+- Abre pelo mecanismo: cada chamada relê todo o contexto, e o que entra nele volta em todas as chamadas seguintes.
+- Salvaguarda: a economia nunca dispensa as leituras integrais, os donos, os gates nem as verificações obrigatórias. Leituras integrais são:
+  - o roteiro, o papel e o `SKILL.md` das skills indicadas;
+  - os arquivos de comando do Spec Kit;
+  - o que o papel manda ler sem dizer "por trecho";
+  - os artefatos que o analyze e o converge comparam.
+
+  Na dúvida entre decidir por um trecho e ler mais, a regra é ler mais.
+- Cada regra cita a métrica do `consumo.py` que a confere:
+  - chamadas independentes na mesma resposta;
+  - comandos de shell num comando só; no PowerShell 5.1, `;` só entre leituras e `if ($?)` quando há escrita;
+  - espera pela notificação de término, sem laço;
+  - repetir igual um comando que falhou só se o erro for passageiro;
+  - começar pelos caminhos que a tarefa, o plano ou o diff citam;
+  - não reler o que continua no contexto e não mudou; depois de contexto resumido, reler o que a decisão exige;
+  - arquivo com mais de 200 linhas lido por intervalo, ampliado até a unidade inteira;
+  - busca fora de dependências e saídas de build (`bin` só quando é saída de build);
+  - usar o comando que o repositório ou o ambiente declaram, com as opções que só reduzem a saída;
+  - saída longa num arquivo, deixando no contexto o código de saída e o trecho que a decisão usa;
+  - arquivo existente alterado por trecho;
+  - artefato que cita ID e caminho em vez de copiar, salvo na fatia que um papel lê sozinho (`repos/<repo>/`);
+  - no orquestrador, registro no `fluxo.py` junto com a ação seguinte e, dos artefatos, só o que o roteiro manda ler.
+- `references/comandos.md`:
+  - a precedência do comando declarado;
+  - a forma silenciosa dos comandos de Python, .NET, Terraform, Docker, Node, git e busca;
+  - como ver o detalhe de uma falha.
+
+  Cada linha foi verificada rodando o comando ou, quando marcada, no `--help`; o `uv` ficou como não verificado.
+- `references/medicao.md`: o que medir, onde ficam os transcritos de cada ferramenta, como recortar a execução, as métricas, os indicadores de qualidade e como comparar versões do kit.
+- A versão anterior, que não chegou a ser commitada, tinha dois problemas:
+  - só era lida quando alguém pedia economia de tokens, e só pelo orquestrador, então não alcançava os agentes que mais gastam;
+  - mandava medir pelo número que a ferramenta informa, que é o contexto final.
+
+#### Auditoria de qualidade, antes do commit
+Cada regra foi revista com a pergunta "um agente que a siga ao pé da letra entrega um trabalho pior?". A primeira versão desta mudança tinha os problemas abaixo, todos corrigidos:
+
+| Risco | Correção |
+|---|---|
+| A tabela de comandos podia substituir o comando que o repositório declara (ex.: `uv run pytest`, o `integration.up` do QA) | Vale o comando declarado; da tabela, só as opções que reduzem a saída |
+| Regressão: o exemplo antigo do QA tinha `terraform apply -auto-approve`, e a consolidação o perdeu. Sem ele, o apply não interativo falha | Linha própria para o apply no ambiente de teste; na pipeline, vale o plano salvo |
+| "Cite o ID em vez de copiar" deixaria o dev e o reviewer sem o requisito, porque eles leem só a fatia `repos/<repo>/` | Exceção para a fatia que um papel lê sozinho |
+| A regra de não reler tinha perdido o "que está em contexto": depois de o contexto ser resumido, o agente trabalharia só com o resumo. E `git diff` não serve para `specs/` | Não reler só o que continua no contexto; o que mudou vem do prompt de continuação ou do relatório; depois de um resumo, reler |
+| `dotnet build -clp:ErrorsOnly` mostra só a contagem de avisos (testado: "2 Aviso(s)"), e um aviso novo passaria despercebido | `dotnet build --nologo -v q`, com um aviso por linha |
+| "No contexto, só o código de saída e o erro" esconderia a saída útil de um comando que deu certo (ex.: o que um plan vai criar) | "…e o trecho que a decisão usa: o erro, o resumo ou as linhas buscadas" |
+| No PowerShell 5.1, o `;` continua depois de uma falha | `;` só entre leituras; com escrita, `if ($?) { … }` |
+| O `--wait` acrescentado ao `docker compose up` mudava o comportamento do exemplo antigo | Retirado; vale o `integration.up` |
+| "Mude a hipótese antes de repetir" desestimulava repetir uma falha passageira | Repetir igual só se o erro indicar falha passageira |
+| Excluir `bin` da busca esconderia código onde `bin/` é fonte, como neste kit | Excluir `bin` só quando é saída de build |
+| A regra das 200 linhas poderia alcançar leituras que o papel exige inteiras e os artefatos do analyze. Hoje não alcança: planos até 110 linhas, tarefas até 94, constitution com cerca de 60 | Salvaguarda explícita das leituras integrais |
+| `pytest --tb=short` pode não bastar para diagnosticar uma falha | Em falha, rodar só o teste, com `--tb=long` |
+
+A auditoria também trouxe:
+- **Busca extra evitada:** da versão anterior, "comece pelos caminhos que a tarefa, o plano ou o diff citam", que evita uma busca a mais (cada chamada extra relê o contexto inteiro).
+- **Métricas como indícios:** o relatório e a `medicao.md` dizem que as métricas são indícios, não portões.
+- **Mais duas funções no `consumo.py`:** a seção de qualidade e o aviso de chamadas antes do início da feature.
+
+#### Medição (`bin/consumo.py`)
+- Lê os transcritos do Claude Code (`~/.claude/projects/...`, com a sessão e a pasta `subagents/`) e do Codex (`~/.codex/sessions/`, filtrados pelo `cwd`).
+- Soma cada chamada nos quatro tipos (entrada nova, escrita de cache, leitura de cache e saída) e grava `specs/<f>/reports/consumo.md`, com:
+  - o resumo e o consumo por papel, com o registrado ao lado;
+  - a qualidade da execução:
+    - rodadas do tech lead e paradas para o humano;
+    - analyze e passagens do converge;
+    - rodadas e resultado do QA;
+    - achados `[handoff]`;
+    - por repositório, as execuções do dev e as revisões reprovadas;
+  - o consumo por agente e as métricas da skill;
+  - os resultados de ferramenta mais caros (tokens × chamadas que os releem);
+  - os parágrafos copiados entre artefatos.
+- O fim da feature é o evento CONCLUÍDO do `eventos.jsonl`. O script avisa quando há chamadas mais de 2 h antes do primeiro evento ou depois do fim, e sugere o recorte; `--desde` e `--ate` recortam.
+- Sem dependências, no Python 3.10 ou mais novo. A preparação já o copia para `.agents/bin/` com os demais scripts.
+
+#### Processo e papéis
+- `orquestrador.md`:
+  - a regra 5 da seção 1 ("Ler uma vez") vira "Comportamento econômico", que aponta para a skill; o orquestrador a lê logo depois do roteiro;
+  - no template 5.4, o subagente lê o papel e a skill na mesma chamada;
+  - o consumo que chega depois do `fim` é registrado na mesma resposta da próxima ação, sem uma chamada só para isso, e o texto explica que o número é o contexto final;
+  - a seção 2 lista o `bin/consumo.py`.
+- `roles/dev.md`, `qa.md`, `pm.md` e `techlead.md`: a "Saída curta", o "Em falha" e a leitura por trecho dão lugar a uma linha que aponta para a skill. O limite de tentativas e o que cada papel lê continuam nos papéis.
+- `skills/catalog.yaml`: `loaded_by` de todos os papéis, com o gatilho "início do trabalho de qualquer papel".
+
+#### Como validar
+```
+python -B -m unittest tests.test_consumo
+python bin/consumo.py 001-disparo-cadastro-lote --raiz ../teste4_codex --ate 2026-11-01T20:31 --saida <arquivo>
+```
+- Os 11 testes passam no Python 3.10 e no 3.14, e o ruff não aponta nada.
+- O `consumo.py` reproduz a auditoria de consumo do teste4 (Codex), feita à parte: recortado em 2026-11-01T20:31, dá 16.475.641 tokens no orquestrador e 28.745.128 nos 14 agentes de trabalho, os números de `reports/auditoria-consumo.md`.
+- Linha de base da feature 001, recortada do pedido que iniciou cada execução até o CONCLUÍDO:
+
+  | Execução | Recorte | Total | Orquestrador | Destaque |
+  |---|---|---:|---:|---|
+  | teste1 (Claude Code) | `--desde 2026-10-31T20:33 --ate 2026-11-01T00:25` | 73,3 mi | 39,5% | sessão sem limpeza: o orquestrador começou com 174 mil tokens de contexto |
+  | teste2 (Claude Code) | `--ate 2026-11-01T02:10` | 21,2 mi | 35,9% | sem QA |
+  | teste3 (Claude Code) | `--ate 2026-11-01T17:31` | 47,0 mi | 27,8% | dev 27,9% e QA 26,2%; um QA de 76 chamadas consumiu 10 mi |
+  | teste4 (Codex) | `--ate 2026-11-01T20:31` | 31,8 mi | 51,7% | 86 esperas do orquestrador: 8,0 mi (25%); aprovação de permissões: 3,1 mi |
+
+  A seção de qualidade do relatório dá o outro lado da comparação. No teste3, por exemplo:
+  - 3 rodadas do tech lead;
+  - converge em 2 passagens;
+  - QA em 3 rodadas, com 13 de 14 critérios;
+  - no `infra_process`, 3 execuções do dev e 1 revisão reprovada.
+- A sessão do teste1 juntava dias de conversa e execuções anteriores. Sem o recorte no início, o total sobe para 234,5 mi; o aviso novo do script aponta esse caso.
+
+#### Pendências conhecidas
+- O efeito da skill ainda não foi medido. Falta rodar a feature 001 com o kit novo, 2 a 3 vezes, e comparar consumo e qualidade com a linha de base. As execuções antigas usaram versões diferentes do kit; a comparação mais limpa também roda o kit sem a skill.
+- O limite de 200 linhas é um ponto de partida: num arquivo pouco acima disso, a busca extra pode custar mais que a leitura inteira. Precisa ser calibrado com as medições.
+- Mudanças de estrutura, fora do alcance de uma skill:
+  - trocar o registro de consumo do orquestrador pelo `consumo.py`;
+  - tirar a preparação do contexto do orquestrador;
+  - sugerir `/clear` e `continue` nas paradas para o humano;
+  - reduzir o contexto de partida dos subagentes (ferramentas por papel, sem conectores que o fluxo não usa);
+  - pôr um teto de chamadas por agente.
+- O painel continua chamando de consumo o contexto final registrado.
 
 ### 2026-11-09 — arquitetura de back-end, Clean Code e SOLID, padrões de projeto e Terraform
 Estas mudanças dão ao tech lead, ao dev e ao reviewer padrões escritos para três assuntos que o kit não cobria: a estrutura interna das aplicações de back-end, a escrita do código (Clean Code, SOLID e padrões de projeto) e a IaC com Terraform. Os exemplos de código das skills passam a ser validados por script. A primeira parte (a skill `clean-architecture`, a primeira versão da `clean-code` e o §32) já está no commit `8bef73a`; o resto entra neste commit.

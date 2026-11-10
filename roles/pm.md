@@ -9,7 +9,7 @@ Você **não** decide regra de negócio (o humano decide), **não** decide arqui
 - Execute os comandos do Spec Kit na forma que o agente expõe (`invoke_separator` de `.specify/integration.json`). Comando não registrado na sessão → siga os passos do arquivo do comando (skill `spec-kit`, problemas conhecidos).
 - **Decisão do humano necessária** → protocolo de repasse: grave o lote no arquivo do modo, cada pergunta com default sugerido e opções compatíveis entre si e com as decisões já tomadas, devolva `AGUARDANDO HUMANO: <arquivo>` e pare. Nunca aplique um default sem o humano dizer.
 - Escreva **somente** nos artefatos do modo (tabela abaixo). Nada nos repositórios de aplicação, no `workspace.yaml` nem no `status.md`.
-- Saída curta nos comandos (modo silencioso; em falha, só o trecho do erro).
+- Chamadas, leitura, saída de comandos e escrita seguem a skill `token-efficiency`, lida junto com este papel.
 
 ## Agentes do PM
 - **PM de autoria** (entrevista, decomposição, specify, clarify, plan, tasks): o mesmo agente da entrada ao tasks, continuado pelo orquestrador a cada etapa. Depois do tasks ele não é mais usado: falha do QA → PM novo no modo `correcao`.

@@ -25,7 +25,6 @@ Você implementa as tarefas de **um único repositório**, com testes unitários
 - Siga à risca a seção `Desenho técnico` do `plan.md`, quando existir (estrutura, padrões, convenções e "não fazer"). Se ela não bater com o código ou for inviável, reporte `BLOQUEIO` em vez de improvisar.
 - Escreva testes unitários para cada tarefa, incluindo casos de erro e de borda descritos no plano.
 - Faça commits pequenos, um por tarefa ou grupo coeso, com mensagem `[<f>] <descrição>`.
-- Abra arquivos por trecho (busca/intervalo de linhas) em vez de ler arquivos grandes inteiros.
 
 ## Escopo e estrutura (vale sobretudo em repositório existente)
 Faça **somente** a alteração que as tarefas pedem. Refatoração, reorganização ou qualquer mudança fora do escopo só quando `tasks.md`, `plan.md` ou o prompt pedirem explicitamente.
@@ -37,8 +36,7 @@ Faça **somente** a alteração que as tarefas pedem. Refatoração, reorganiza�
 - **Antes de cada commit**: revise `git diff --stat` e o diff dos arquivos; cada trecho precisa corresponder a uma tarefa. O que não corresponder, desfaça.
 
 ## Execução econômica
-- **Saída curta**: rode comandos em modo silencioso (ex.: `pip -q`, `pytest -q`, `terraform init -input=false` com a saída descartada, `ruff --quiet`). Nunca deixe logs inteiros de instalação, download ou teste no contexto.
-- **Em falha**: veja só o trecho que explica o erro (ex.: `| tail -n 30`, ou grave o log num arquivo temporário fora do repositório e busque o erro nele).
+- Chamadas, leitura, saída de comandos e escrita seguem a skill `token-efficiency`, lida junto com este papel.
 - **Durante as tarefas**: rode só o teste da tarefa, com o comando `Teste específico` das notas do repositório.
 - **Verificação final, uma vez**: ao concluir as tarefas, rode a suíte completa, o lint e o build. Se algo falhar, corrija, rode de novo só o que falhou e termine com a suíte completa uma última vez.
 - **Limite de tentativas**: se o mesmo erro se repetir 3 vezes sem progresso (ambiente, ferramenta, dependência ou um teste que você não consegue fazer passar), pare de insistir. Registre `BLOQUEIO` com o comando e o trecho do erro, siga para as tarefas que não dependem dele e, se nenhuma restar, encerre e reporte.
